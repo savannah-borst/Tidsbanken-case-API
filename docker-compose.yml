@@ -6,10 +6,10 @@ services:
     env_file: .env
     build: .
     environment:
-      DATABASE_URL: jdbc:postgresql://localhost:5432/${POSTGRES_DB}?sslmode=prefer&user=${POSTGRES_USER}&password=${POSTGRES_PASSWORD}
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}?sslmode=prefer&user=${POSTGRES_USER}&password=${POSTGRES_PASSWORD}
       SPRING_PROFILE: development
     ports:
-      - "8081:8080"
+      - "8080:8080"
 
   postgres:
     image: postgres:14-alpine # https://hub.docker.com/_/postgres
