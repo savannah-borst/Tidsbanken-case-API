@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Comment {
@@ -25,7 +26,13 @@ public class Comment {
     @Column(nullable = false)
     public Date dateUpdated;
 
-    //FK request_id
 
-    //FK user_id
+    //relation with VacationRequest
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "vacationrequest_comment",
+            joinColumns = {@JoinColumn(name = "comment_id")},
+            inverseJoinColumns = {@JoinColumn(name = "request_id")}
+    )
+    public VacationRequest vacationRequest;
 }

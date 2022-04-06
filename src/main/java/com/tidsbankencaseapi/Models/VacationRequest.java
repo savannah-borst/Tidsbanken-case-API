@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class VacationRequest {
@@ -35,9 +36,21 @@ public class VacationRequest {
 
     @NotBlank
     @Column
-    public Enum status;
+    @Enumerated(EnumType.ORDINAL)
+    public Status status;
 
-    //FK user_id
 
-    //FK admin_id
+    //Relation with Employee
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "employee_vacationrequest",
+            joinColumns = {@JoinColumn(name = "request_id")},
+            inverseJoinColumns = {@JoinColumn(name = "employee_id")}
+    )
+    public Employee employee;
+
+
+    //Relation with Comment
+    @OneToMany(mappedBy = "vacationRequest", fetch = FetchType.LAZY)
+    public List<Comment> comment; //this.getComments();
 }

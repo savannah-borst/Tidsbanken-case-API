@@ -18,6 +18,4 @@ public class IneligablePeriod {
     @NotBlank
     @Column(nullable = false)
     public Date periodEnd;
-
-    //FK created by
 }
