@@ -1,4 +1,4 @@
 package com.tidsbankencaseapi.Controllers;
 
-public class UserController {
+public class EmployeeController {
 }
