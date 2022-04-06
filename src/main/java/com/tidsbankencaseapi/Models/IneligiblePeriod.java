@@ -5,11 +5,11 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
-public class IneligablePeriod {
+public class IneligiblePeriod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int ineligablePeriodId;
+    public int ineligiblePeriodId;
 
     @NotBlank
     @Column(nullable = false)
