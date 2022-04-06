@@ -1,9 +1,9 @@
 FROM jboss/keycloak:latest
 
 ENV KEYCLOAK_USER admin
-ENV KEYCLOAK_PASSWORD mypassword
+ENV KEYCLOAK_PASSWORD admin
 ENV PROXY_ADDRESS_FORWARDING true
-ENV PORT 8080
+ENV PORT 8083
 
 COPY docker-entrypoint.sh /opt/jboss/tools
 
