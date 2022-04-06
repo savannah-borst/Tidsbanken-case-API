@@ -195,6 +195,6 @@ fi
 ##################
 
 # Small modification: Obey the `PORT` environment variable
-exec /opt/jboss/keycloak/bin/standalone.sh $SYS_PROPS @ -Djboss.http.port=$PORT
+exec /opt/jboss/keycloak/bin/standalone.sh $SYS_PROPS $@ -Djboss.http.port=$PORT
 exit $?
 
