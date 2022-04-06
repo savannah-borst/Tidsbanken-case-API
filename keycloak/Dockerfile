@@ -1,7 +1,7 @@
-FROM jboss/keycloak:16.1.1
+FROM jboss/keycloak:latest
 
 ENV KEYCLOAK_USER admin
-ENV KEYCLOAK_PASSWORD admin
+ENV KEYCLOAK_PASSWORD mypassword
 ENV PROXY_ADDRESS_FORWARDING true
 ENV PORT 8080
 

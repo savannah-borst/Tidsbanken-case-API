@@ -39,8 +39,8 @@ services:
     image: jboss/keycloak
     restart: always
     environment:
-      KEYCLOAK_USER: ${KEYCLOAK_USER}
-      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
       DB_VENDOR: postgres
       DB_USER: keycloak
       DB_PASSWORD: keycloak
