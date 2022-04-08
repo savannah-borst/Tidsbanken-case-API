@@ -1,4 +1,4 @@
-package com.tidsbankencaseapi.Config;
+package com.tidsbankencaseapi.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
