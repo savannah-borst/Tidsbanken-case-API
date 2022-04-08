@@ -29,17 +29,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
 
                 // Enable security for http requests
-                .authorizeRequests(authorize -> {
-                    authorize
-                            // Specify paths where public access is allowed
-                            .antMatchers("/tidsbanken-docs").permitAll()
-                            .antMatchers("/swagger-ui/", "/swagger-ui/*", "/swagger-ui/**").permitAll()
-                            .antMatchers("/", "/employee").permitAll()
+                .authorizeRequests(authorize -> authorize
+                        // Specify paths where public access is allowed
+                        .antMatchers("/tidsbanken-docs","/tidsbanken-docs/*").permitAll()
+                        .antMatchers("/swagger-ui/*","/swagger-ui/**").permitAll()
 
-                            // All remaining paths require authentication
-                            //TODO: change to Authenticated
-                            .anyRequest().authenticated();
-                })
+                        // All remaining paths require authentication
+                        .anyRequest().authenticated())
+
 
                 // Configure OAuth2 Resource Server (JWT authentication)
                 .oauth2ResourceServer(oauth2 -> {
