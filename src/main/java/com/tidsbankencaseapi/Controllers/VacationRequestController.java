@@ -1,5 +1,6 @@
 package com.tidsbankencaseapi.Controllers;
 
+import com.tidsbankencaseapi.Models.Status;
 import com.tidsbankencaseapi.Models.VacationRequest;
 import com.tidsbankencaseapi.Repositories.VacationRequestRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,12 +24,26 @@ public class VacationRequestController {
     @GetMapping
     public ResponseEntity<List<VacationRequest>> getListRequest() {
         //Optionally accepts appropriate query parameters to search and limit responses
+        List<VacationRequest> allRequests = requestRepository.findAll();
+        List<VacationRequest> shownRequests = new ArrayList<>();
+        HttpStatus status;
 
         //AUTH
         //All users may see all approved requests
         //All users may see all own requests (regardless of state)
         //Admin may see all requests (regardless of state)
-        List<VacationRequest> requestList =
+        if (employee logged in != isAdmin) {
+            for (int i = 0; i < allRequests.size(); i++) {
+                if (employee logged in === allRequests.get(i).employee || allRequests.get(i).status === Status.APPROVED) {
+                    shownRequests.add(allRequests.get(i));
+                }
+            }
+            status = HttpStatus.OK;
+            return new ResponseEntity<>(shownRequests, status);
+        } else {
+            status = HttpStatus.OK;
+            return new ResponseEntity<>(allRequests, status)
+        }
     }*/
 
     //POST /request
@@ -37,6 +53,8 @@ public class VacationRequestController {
         HttpStatus status;
 
         //should have state pending
+        request.status = Status.PENDING;
+        //employee that made request should be passed as well
 
         request = requestRepository.save(request);
         status =HttpStatus.OK;
@@ -53,12 +71,17 @@ public class VacationRequestController {
 
         //AUTH
         //if request = NOT from current employee or admin & request is not approved return HttpStatus.FORBIDDEN
+        //see in else statement
 
         if (!requestRepository.existsById(id)) {
             status = HttpStatus.NOT_FOUND;
         } else {
-            status = HttpStatus.OK;
-            request = requestRepository.findById(id).get();
+            //if (employee logged in === request.employee || employee logged in.isAdmin || request.status === Status.APPROVED) {
+                status = HttpStatus.OK;
+                request = requestRepository.findById(id).get();
+            /*} else {
+                status = HttpStatus.FORBIDDEN
+            }*/
         }
         return new ResponseEntity<>(request, status);
     }
@@ -67,18 +90,32 @@ public class VacationRequestController {
     @Operation(summary = "Update vacation request")
     @PatchMapping("update/{id}")
     public ResponseEntity<VacationRequest> updateRequest(@PathVariable Integer id, @RequestBody VacationRequest request) {
-        VacationRequest returnRequest = new VacationRequest();
+        VacationRequest returnRequest = requestRepository.findById(id).get();
         HttpStatus status;
 
         //AUTH
-        //only request owner can make updates before Approved or Denied
-        //only admin can update request without give HttpStatus.FORBIDDEN as response
         // the admin and time of update should be recorded on the request object
 
         if (!id.equals(request.requestId)) {
             status = HttpStatus.BAD_REQUEST;
             return new ResponseEntity<>(returnRequest, status);
         }
+        //only request owner can make updates before Approved or Denied
+        /*if (employee logged in === request.employee && request.status === Status.PENDING) {
+            returnRequest = requestRepository.save(request);
+            status = HttpStatus.NO_CONTENT;
+        } else {
+            status = HttpStatus.FORBIDDEN
+        }*/
+
+        //only admin can update request state without give HttpStatus.FORBIDDEN as response
+        /*if (returnRequest.status != request.status && employee logged in.isAdmin){
+            returnRequest = requestRepository.save(request);
+            status = HttpStatus.NO_CONTENT;
+        } else {
+            status = HttpStatus.FORBIDDEN
+        }*/
+
         returnRequest = requestRepository.save(request);
         status = HttpStatus.NO_CONTENT;
         return new ResponseEntity<>(returnRequest,status);
@@ -92,6 +129,11 @@ public class VacationRequestController {
 
         //AUTH
         //admin only
+        /*if (employee logged in.isAdmin) {
+
+        } else {
+            status = HttpStatus.FORBIDDEN
+        }*/
 
         if (!requestRepository.existsById(id)) {
             status = HttpStatus.BAD_REQUEST;
