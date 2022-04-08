@@ -27,11 +27,12 @@ public class VacationRequestController {
     //GET /request
     @Operation
     @GetMapping("/")
-
-    public ResponseEntity<List<VacationRequest>> getListRequest() {
+    //@PreAuthorize()
+    public ResponseEntity<List<VacationRequest>> getListRequest(@AuthenticationPrincipal Jwt principal) {
         //Optionally accepts appropriate query parameters to search and limit responses
         List<VacationRequest> allRequests = requestRepository.findAll();
         List<VacationRequest> shownRequests = new ArrayList<>();
+        List<String> auth = principal.getClaimAsStringList("roles");
         HttpStatus status;
 
         //AUTH
@@ -39,18 +40,18 @@ public class VacationRequestController {
         //All users may see all own requests (regardless of state)
         //Admin may see all requests (regardless of state)
         // MAP!!!
-        /*if (logged in employee != isAdmin) {
-            for (int i = 0; i < allRequests.size(); i++) {
+        if (!auth.contains("admin")) {
+            /*for (int i = 0; i < allRequests.size(); i++) {
                 if (employee logged in === allRequests.get(i).employee || allRequests.get(i).status === Status.APPROVED) {
                     shownRequests.add(allRequests.get(i));
                 }
             }*/
             status = HttpStatus.OK;
             return new ResponseEntity<>(shownRequests, status);
-       /* } else {
+        } else {
             status = HttpStatus.OK;
-            return new ResponseEntity<>(allRequests, status)
-        }*/
+            return new ResponseEntity<>(allRequests, status);
+        }
     }
 
     //POST /request
