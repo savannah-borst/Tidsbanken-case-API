@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
-@OpenAPIDefinition(info = @Info(title = "Tidsbanken API", description = "Tidsbanken for managing vacation requests", version = "0.1.0"))
+@OpenAPIDefinition(info = @Info(title = "Tidsbanken API", description = "Resource server of Tidsbanken for managing vacation requests", version = "0.1.0"))
 @SecurityScheme(name = "keycloak_implicit", type = SecuritySchemeType.OAUTH2,
         flows = @OAuthFlows(authorizationCode = @OAuthFlow(authorizationUrl = "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/auth", tokenUrl = "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/token", scopes = {
                 @OAuthScope(name = "openid", description = "OpenID Connect Endpoints"),
