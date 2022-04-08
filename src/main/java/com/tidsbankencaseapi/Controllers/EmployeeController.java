@@ -20,21 +20,21 @@ public class EmployeeController {
     private EmployeeRepository employeeRepository;
 
     //GET /employee
-    /*@Operation(summary = "Get Employee")
+    @Operation(summary = "Get Employee")
     @GetMapping("")
     public ResponseEntity<Employee> getEmployee() {
         HttpStatus status;
 
         //AUTH
         //get logged in employee / Can we get their id as well?
-        //Integer id = keycloak get employee id
+
         if (!employeeRepository.existsById(id) {
             status = HttpStatus.BAD_REQUEST;
         } else {
             status = HttpStatus.SEE_OTHER;
-
+            //location
         }
-    }*/
+    }
 
     //POST /employee
     @Operation(summary = "Register Employee")
@@ -42,14 +42,18 @@ public class EmployeeController {
     public ResponseEntity<Employee> registerEmployee(@RequestBody Employee employee) {
         HttpStatus status;
         //AUTH
-        //Put employee in keycloak
-
-        if (!employeeRepository.existsById(employee.employeeId)) {
-            employee = employeeRepository.save(employee);
-            status = HttpStatus.OK;
-        } else {
-            status = HttpStatus.BAD_REQUEST;
+        //add employee in keycloak
+        if (logged in.isAdmin) {
+            if (!employeeRepository.existsById(employee.employeeId)) {
+                employee = employeeRepository.save(employee);
+                status = HttpStatus.OK;
+            } else {
+                status = HttpStatus.BAD_REQUEST;
+            }
+        } else  {
+            status = HttpStatus.FORBIDDEN;
         }
+
         return new ResponseEntity<>(employee, status);
     }
 
@@ -61,6 +65,7 @@ public class EmployeeController {
         HttpStatus status;
         //AUTH
         //if user should return only pic and name
+
 
         if (!employeeRepository.existsById(id)) {
             status = HttpStatus.NOT_FOUND;
@@ -79,12 +84,17 @@ public class EmployeeController {
         //AUTH
         //update of password returns bad request
         //only admin can change isAdmin all other unauth attempts respond with 403 Forbidden
-        Employee returnEmployee = new Employee();
+        Employee returnEmployee = employeeRepository.findById(id).get();
         HttpStatus status;
 
         if (!id.equals(employee.employeeId)) {
             status = HttpStatus.BAD_REQUEST;
             return new ResponseEntity<>(returnEmployee, status);
+        }
+        if (returnEmployee.isAdmin != employee.isAdmin && logged in != isAdmin) {
+            status = HttpStatus.FORBIDDEN
+        } else {
+
         }
         returnEmployee = employeeRepository.save(employee);
         status = HttpStatus.NO_CONTENT;
