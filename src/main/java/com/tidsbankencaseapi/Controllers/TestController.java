@@ -9,6 +9,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @SecurityRequirement(name = "keycloak_implicit")
 public class TestController {
@@ -31,6 +33,7 @@ public class TestController {
         return "Hello protected admin";
     }
 
+
     //Protected with authentication
     @GetMapping("/employee/protected/user")
     @PreAuthorize("hasAuthority('GROUP_user')")
@@ -41,11 +44,9 @@ public class TestController {
     //Protected method to inspect JWT
     @GetMapping("/inspect")
     @PreAuthorize("hasAuthority('GROUP_admin')")
-    public ResponseEntity<CommonResponse<Object>> inspect(
-            @AuthenticationPrincipal Jwt principal
-    ) {
+    public ResponseEntity<CommonResponse<Object>> inspect(@AuthenticationPrincipal Jwt principal)
+    {
         return ResponseEntity
                 .ok(new CommonResponse<>(principal.getClaims().get("given_name")));
     }
-
 }
