@@ -1,13 +1,18 @@
 package com.tidsbankencaseapi.Controllers;
 
+import com.tidsbankencaseapi.Models.Employee;
 import com.tidsbankencaseapi.Models.Status;
 import com.tidsbankencaseapi.Models.VacationRequest;
 import com.tidsbankencaseapi.Repositories.VacationRequestRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +25,9 @@ public class VacationRequestController {
     private VacationRequestRepository requestRepository;
 
     //GET /request
-    /*@Operation
-    @GetMapping
+    @Operation
+    @GetMapping("/")
+
     public ResponseEntity<List<VacationRequest>> getListRequest() {
         //Optionally accepts appropriate query parameters to search and limit responses
         List<VacationRequest> allRequests = requestRepository.findAll();
@@ -32,19 +38,20 @@ public class VacationRequestController {
         //All users may see all approved requests
         //All users may see all own requests (regardless of state)
         //Admin may see all requests (regardless of state)
-        if (employee logged in != isAdmin) {
+        // MAP!!!
+        /*if (logged in employee != isAdmin) {
             for (int i = 0; i < allRequests.size(); i++) {
                 if (employee logged in === allRequests.get(i).employee || allRequests.get(i).status === Status.APPROVED) {
                     shownRequests.add(allRequests.get(i));
                 }
-            }
+            }*/
             status = HttpStatus.OK;
             return new ResponseEntity<>(shownRequests, status);
-        } else {
+       /* } else {
             status = HttpStatus.OK;
             return new ResponseEntity<>(allRequests, status)
-        }
-    }*/
+        }*/
+    }
 
     //POST /request
     @Operation(summary = "Create a New Vacation Request")
