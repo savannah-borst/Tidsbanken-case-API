@@ -33,10 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         // Specify paths where public access is allowed
                         .antMatchers("/tidsbanken-docs/**").permitAll()
                         .antMatchers("/swagger-ui","/swagger-ui/*","/swagger-ui/**").permitAll()
+                        .antMatchers("/","/employee").permitAll()
 
                         // All remaining paths require authentication
                         //TODO: change to Authenticated
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
 
                 // Configure OAuth2 Resource Server (JWT authentication)
                 .oauth2ResourceServer(oauth2 -> {
