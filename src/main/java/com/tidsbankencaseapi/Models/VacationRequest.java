@@ -1,10 +1,13 @@
 package com.tidsbankencaseapi.Models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class VacationRequest {
@@ -35,12 +38,21 @@ public class VacationRequest {
     public Date dateUpdated;
 
     @NotBlank
-    @Column
-    @Enumerated(EnumType.ORDINAL)
+    @Column(length = 10)
+    @Enumerated(EnumType.STRING)
     public Status status;
 
 
     //Relation with Employee
+    @JsonGetter("employee")
+    public String employee() {
+        if (employee != null) {
+            return employee.employeeId + " " + employee.name;
+        } else {
+            return null;
+        }
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "employee_vacationrequest",
@@ -51,6 +63,17 @@ public class VacationRequest {
 
 
     //Relation with Comment
+    @JsonGetter("comment")
+    public List<String> get_comments() {
+        if (comment != null) {
+            return comment.stream()
+                    .map(commentItem -> {
+                        return "Comment: " + commentItem.commentId;
+                    }).collect(Collectors.toList());
+        }
+        return null;
+    }
+
     @OneToMany(mappedBy = "vacationRequest", fetch = FetchType.LAZY)
     public List<Comment> comment; //this.getComments();
 }
