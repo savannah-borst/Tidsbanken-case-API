@@ -49,7 +49,7 @@ public class TestController {
 
     //Protected with authentication
     @GetMapping("/employee/protected/user/role")
-    @PreAuthorize("hasRole('api-user')")
+    @PreAuthorize("hasRole('user')")
     public String helloProtectedDefaultUserRole(){
         return "Has role user";
     }
