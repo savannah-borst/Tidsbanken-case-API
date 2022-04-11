@@ -1,19 +1,21 @@
 package com.tidsbankencaseapi.Models;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int employeeId;
+    public String employeeId;
 
     @NotBlank
     @Size(max = 50)
@@ -50,6 +52,7 @@ public class Employee {
     }
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public List<VacationRequest> vacationRequests = this.getVacationRequests();
 
 
