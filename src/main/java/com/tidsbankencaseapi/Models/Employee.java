@@ -18,7 +18,12 @@ public class Employee {
     @NotBlank
     @Size(max = 50)
     @Column(length = 50, nullable = false)
-    public String name;
+    public String first_name;
+
+    @NotBlank
+    @Size(max = 50)
+    @Column(length = 50, nullable = false)
+    public String last_name;
 
     @NotBlank
     @Size(max = 50)
