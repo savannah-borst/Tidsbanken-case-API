@@ -10,9 +10,9 @@ ENV SPRING_PROFILE production
 ENV DATABASE_URL ""
 ENV ISSUER_URL "https://keycloak-tidsbanken-case.herokuapp.com/auth/realms/tidsbankencase"
 ENV JWKS_URI "https://keycloak-tidsbanken-case.herokuapp.com/auth/realms/tidsbankencase/protocol/openid-connect/certs"
-#ENV CLIENT_ID "client-id"
-#ENV CLIENT_SECRET "client-secret"
-#ENV DDL_AUTO "create"
+ENV CLIENT_ID "tidsbanken-id"
+ENV CLIENT_SECRET "client-secret"
+ENV DDL_AUTO "create"
 ENV APP_ORIGIN "http://localhost:3000"
 COPY --from=gradle /app/build/libs/*.jar /app/app.jar
 RUN chown -R 1000:1000 /app
