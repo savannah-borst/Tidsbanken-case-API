@@ -35,4 +35,5 @@ public class Comment {
             inverseJoinColumns = {@JoinColumn(name = "request_id")}
     )
     public VacationRequest vacationRequest;
+
 }

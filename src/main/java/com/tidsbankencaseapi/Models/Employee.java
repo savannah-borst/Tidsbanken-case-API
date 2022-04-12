@@ -1,21 +1,28 @@
 package com.tidsbankencaseapi.Models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int employeeId;
+    public String employeeId;
 
     @NotBlank
     @Size(max = 50)
     @Column(length = 50, nullable = false)
-    public String name;
+    public String first_name;
+
+    @NotBlank
+    @Size(max = 50)
+    @Column(length = 50, nullable = false)
+    public String last_name;
 
     @NotBlank
     @Size(max = 50)
@@ -31,8 +38,19 @@ public class Employee {
 
 
     //Relation with Vacation Request
+    @JsonGetter("vacationRequests")
+    public List<String> get_vacation_request() {
+        if (vacationRequests != null) {
+            return vacationRequests.stream()
+                    .map(requestItem -> {
+                        return requestItem.requestId + " " + requestItem.title;
+                    }).collect(Collectors.toList());
+        }
+        return null;
+    }
+
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
-    public List<VacationRequest> vacationRequests;// = this.getVacationRequests();
+    public List<VacationRequest> vacationRequests = this.getVacationRequests();
 
 
     //Relation with Comment
@@ -40,4 +58,8 @@ public class Employee {
     @JoinColumn(name = "employee_id")
     List<Comment> comments;
 
+    //GETTERS
+    public List<VacationRequest> getVacationRequests() {
+        return vacationRequests;
+    }
 }
