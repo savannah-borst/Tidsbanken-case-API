@@ -1,11 +1,14 @@
 package com.tidsbankencaseapi.Models;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
@@ -36,7 +39,6 @@ public class Employee {
     @Column
     public Boolean isAdmin;
 
-
     //Relation with Vacation Request
     @JsonGetter("vacationRequests")
     public List<String> get_vacation_request() {
@@ -49,7 +51,8 @@ public class Employee {
         return null;
     }
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public List<VacationRequest> vacationRequests = this.getVacationRequests();
 
 
@@ -57,6 +60,7 @@ public class Employee {
     @OneToMany
     @JoinColumn(name = "employee_id")
     List<Comment> comments;
+
 
     //GETTERS
     public List<VacationRequest> getVacationRequests() {
