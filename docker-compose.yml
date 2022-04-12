@@ -50,4 +50,4 @@ services:
 
 volumes:
   postgresdata: {}
-#  keycloakdata: {}
+  #keycloakdata: {}
