@@ -1,6 +1,10 @@
 package com.tidsbankencaseapi.Models;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +18,7 @@ public class VacationRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int requestId;
+    public Integer requestId;
 
     @NotBlank
     @Size(max = 100)
@@ -35,45 +39,64 @@ public class VacationRequest {
 
     @NotBlank
     @Column(nullable = false)
+    @LastModifiedDate
     public Date dateUpdated;
 
     @NotBlank
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
-    public Status status;
+    public Status status = Status.PENDING;
 
+    //Relation with Owner
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "employee_vacationrequest",
+            joinColumns = {@JoinColumn(name = "request_id")},
+            inverseJoinColumns = {@JoinColumn(name = "owner_id")}
+    )
+    @JoinColumn(name = "owner_id")
+    public Employee owner = this.getOwner();
 
-    //Relation with Employee
-    @JsonGetter("employee")
-    public String employee() {
-        if (employee != null) {
-            return employee.employeeId + " " + employee.name;
+    public Employee getOwner(){
+        return owner;
+    }
+
+    @JsonGetter("owner")
+    public String get_owner() {
+        if (owner != null) {
+            return "Owner: " + owner.employeeId + " " + owner.first_name + " " + owner.last_name;
         } else {
             return null;
         }
     }
 
+    //Relation with administrator as moderator
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "employee_vacationrequest",
-            joinColumns = {@JoinColumn(name = "request_id")},
-            inverseJoinColumns = {@JoinColumn(name = "employee_id")}
-    )
-    public Employee employee;
+    @JoinColumn(name = "moderator_id")
+    public Employee moderator;
 
+    @JsonGetter("moderator")
+    public String moderator() {
+        if (moderator != null) {
+            return "Moderator: " + moderator.employeeId + " " + moderator.first_name + " " + moderator.last_name;
+        } else {
+            return null;
+        }
+    }
 
     //Relation with Comment
+    @OneToMany(mappedBy = "vacationRequest", fetch = FetchType.LAZY)
+    public List<Comment> comment; //this.getComments();
+
     @JsonGetter("comment")
     public List<String> get_comments() {
         if (comment != null) {
             return comment.stream()
                     .map(commentItem -> {
-                        return "Comment: " + commentItem.commentId;
+                        return "Comment: " + commentItem.commentId + commentItem.message;
                     }).collect(Collectors.toList());
         }
         return null;
     }
 
-    @OneToMany(mappedBy = "vacationRequest", fetch = FetchType.LAZY)
-    public List<Comment> comment; //this.getComments();
 }

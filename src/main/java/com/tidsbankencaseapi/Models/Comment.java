@@ -26,7 +26,6 @@ public class Comment {
     @Column(nullable = false)
     public Date dateUpdated;
 
-
     //relation with VacationRequest
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
