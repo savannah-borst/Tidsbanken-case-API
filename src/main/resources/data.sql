@@ -16,9 +16,9 @@ INSERT INTO employee_vacationrequest SELECT 'ba953f00-a505-4504-9449-b17480e04d8
 INSERT INTO employee_vacationrequest SELECT 'il-1', 5;
 INSERT INTO employee_vacationrequest SELECT 'ba953f00-a505-4504-9449-b17480e04d8b', 6;
 
-INSERT INTO comment (date_created, date_updated, message) VALUES ('2022-04-11T09:23:46.188Z', '2022-04-11T09:23:46.188Z', 'vacation request for savannah');
-INSERT INTO comment (date_created, date_updated, message) VALUES ('2022-04-11T09:23:46.188Z', '2022-04-11T09:23:46.188Z', 'vacation request for dianto');
-INSERT INTO comment (date_created, date_updated, message) VALUES ('2022-04-11T09:23:46.188Z', '2022-04-11T09:23:46.188Z', 'vacation request for iljaas');
+INSERT INTO comment (date_created, date_updated, message, employee_id) VALUES ('2022-04-11T09:23:46.188Z', '2022-04-11T09:23:46.188Z', 'vacation request for savannah', 'e8307ff3-2dd5-4fbc-b0a3-44ddbb956cc4');
+INSERT INTO comment (date_created, date_updated, message, employee_id) VALUES ('2022-04-11T09:23:46.188Z', '2022-04-11T09:23:46.188Z', 'vacation request for dianto', 'ba953f00-a505-4504-9449-b17480e04d8b');
+INSERT INTO comment (date_created, date_updated, message, employee_id) VALUES ('2022-04-11T09:23:46.188Z', '2022-04-11T09:23:46.188Z', 'vacation request for iljaas', 'il-1');
 
 INSERT INTO vacationrequest_comment SELECT 1, 1;
 INSERT INTO vacationrequest_comment SELECT 4, 2;
