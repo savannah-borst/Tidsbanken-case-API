@@ -61,10 +61,10 @@ public class EmployeeController {
         HttpStatus status;
 
         //always init with admin false
-        employee.isAdmin = Boolean.FALSE;
+        employee.setAdmin(Boolean.FALSE);
 
         //If employee does not exist save else BAD REQUEST
-        if (!employeeRepository.existsById(employee.employeeId)) {
+        if (!employeeRepository.existsById(employee.getEmployeeId())) {
             employee = employeeRepository.save(employee);
             status = HttpStatus.OK;
         } else {
@@ -93,9 +93,9 @@ public class EmployeeController {
             if (signedInRole.contains("administrator")) {
                 employee = employeeRepository.findById(id).get();
             } else {
-                employee.first_name = employeeRepository.findById(id).get().first_name;
-                employee.last_name = employeeRepository.findById(id).get().last_name;
-                employee.profilePic = employeeRepository.findById(id).get().profilePic;
+                employee.setFirst_name(employeeRepository.findById(id).get().getFirst_name());
+                employee.setLast_name(employeeRepository.findById(id).get().getLast_name());
+                employee.setProfilePic(employeeRepository.findById(id).get().getProfilePic());
             }
             status =HttpStatus.OK;
         }
@@ -115,36 +115,36 @@ public class EmployeeController {
         List<String> signedInRole = principal.getClaimAsStringList("roles");
 
         //check if pathvariable id equals request employee id
-        if (!id.equals(employee.employeeId)) {
+        if (!id.equals(employee.getEmployeeId())) {
             status = HttpStatus.BAD_REQUEST;
             return new ResponseEntity<>(returnEmployee, status);
 
         } else {
 
             //if admin is changed by admin change it else return FORBIDDEN.
-            if (employee.isAdmin != null)  {
+            if (employee.getAdmin() != null)  {
                 if (signedInRole.contains("administrator")) {
-                    returnEmployee.isAdmin = employee.isAdmin;
+                    returnEmployee.setAdmin(employee.getAdmin());
                 } else  {
                     status =  HttpStatus.FORBIDDEN;
                     return new ResponseEntity<>(returnEmployee, status);
                 }
             }
 
-            if (employee.first_name != null) {
-                returnEmployee.first_name = employee.first_name;
+            if (employee.getFirst_name() != null) {
+                returnEmployee.setFirst_name(employee.getFirst_name());
             }
 
-            if (employee.last_name != null) {
-                returnEmployee.last_name = employee.last_name;
+            if (employee.getLast_name() != null) {
+                returnEmployee.setLast_name(employee.getLast_name());
             }
 
-            if (employee.emailAddress != null) {
-                returnEmployee.emailAddress = employee.emailAddress;
+            if (employee.getEmailAddress() != null) {
+                returnEmployee.setEmailAddress(employee.getEmailAddress());
             }
 
-            if (employee.profilePic != null) {
-                returnEmployee.profilePic = employee.profilePic;
+            if (employee.getProfilePic() != null) {
+                returnEmployee.setProfilePic(employee.getProfilePic());
             }
 
             employeeRepository.save(returnEmployee);

@@ -11,20 +11,20 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int commentId;
+    private int commentId;
 
     @NotBlank
     @Size(max = 255)
     @Column
-    public String message;
+    private String message;
 
     @NotBlank
     @Column(nullable = false)
-    public Date dateCreated;
+    private Date dateCreated;
 
     @NotBlank
     @Column(nullable = false)
-    public Date dateUpdated;
+    private Date dateUpdated;
 
 
     //relation with VacationRequest
@@ -36,4 +36,45 @@ public class Comment {
     )
     public VacationRequest vacationRequest;
 
+    //-----GETTERS-----
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public Date getDateUpdated() {
+        return dateUpdated;
+    }
+
+    public VacationRequest getVacationRequest() {
+        return vacationRequest;
+    }
+
+    //-----SETTERS-----
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public void setDateUpdated(Date dateUpdated) {
+        this.dateUpdated = dateUpdated;
+    }
+
+    public void setVacationRequest(VacationRequest vacationRequest) {
+        this.vacationRequest = vacationRequest;
+    }
 }
