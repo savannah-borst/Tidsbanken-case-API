@@ -13,8 +13,9 @@ ENV JWKS_URI "https://keycloak-tidsbanken-case.herokuapp.com/auth/realms/tidsban
 ENV CLIENT_ID "tidsbanken-id"
 ENV CLIENT_SECRET "client-secret"
 ENV DDL_AUTO "create"
-ENV APP_ORIGIN "http://localhost:3000"
+ENV APP_ORIGIN "http://localhost:4200"
 COPY --from=gradle /app/build/libs/*.jar /app/app.jar
 RUN chown -R 1000:1000 /app
 USER 1000:1000
 ENTRYPOINT ["java","-jar","app.jar"]
+
