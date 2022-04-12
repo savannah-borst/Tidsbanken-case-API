@@ -24,8 +24,8 @@ import java.util.Optional;
 @SecurityRequirement(name = "keycloak_implicit")
 public class VacationRequestController {
 
-    private VacationRequestRepository requestRepository;
-    private EmployeeRepository employeeRepository;
+    private final VacationRequestRepository requestRepository;
+    private final EmployeeRepository employeeRepository;
 
     public VacationRequestController(VacationRequestRepository requestRepository, EmployeeRepository employeeRepository) {
         this.requestRepository = requestRepository;
