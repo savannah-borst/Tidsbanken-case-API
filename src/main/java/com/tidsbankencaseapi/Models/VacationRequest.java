@@ -39,8 +39,8 @@ public class VacationRequest {
 
     @NotBlank
     @Column
-    @Enumerated(EnumType.ORDINAL)
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.PENDING;
 
 
     //Relation with Owner
