@@ -51,7 +51,7 @@ public class VacationRequest {
             inverseJoinColumns = {@JoinColumn(name = "owner_id")}
     )
     @JoinColumn(name = "owner_id")
-    public Employee owner = this.getOwner();
+    public Employee owner;
 
     @JsonGetter("owner")
     public String get_owner() {
