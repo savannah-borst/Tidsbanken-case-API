@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 
 @RestController
@@ -34,18 +33,15 @@ public class VacationRequestController {
     }
 
     //GET /request
-    @Operation
+    @Operation(summary = "Get Vacation requests")
     @GetMapping("/")
     @PreAuthorize("hasAnyRole('user', 'administrator')")
     public ResponseEntity<List<VacationRequest>> getListRequest(@AuthenticationPrincipal Jwt principal) {
         //Optionally accepts appropriate query parameters to search and limit responses
 
         List<VacationRequest> allRequests = requestRepository.findAll();
-        List<VacationRequest> filteredRequests;
         HttpStatus status = HttpStatus.OK;
-        //String employee_id = "e8307ff3-2dd5-4fbc-b0a3-44ddbb956cc4";
-        Optional<Employee> vacationRequestsOwnerRepo = employeeRepository.findById(1);
-        Employee employee = vacationRequestsOwnerRepo.get();
+        Employee vacationRequestsOwner = employeeRepository.getById(principal.getSubject());
         ResponseEntity<List<VacationRequest>> response;
 
         //AUTH
@@ -61,8 +57,8 @@ public class VacationRequestController {
                 response = new ResponseEntity<>(allRequests, status);
             }
             else{
-                filteredRequests = requestRepository
-                        .getVacationRequestsByOwnerOrStatus(employee, Status.APPROVED);
+                List<VacationRequest> filteredRequests = requestRepository
+                        .getVacationRequestsByOwnerOrStatus(vacationRequestsOwner, Status.APPROVED);
                 response = new ResponseEntity<>(filteredRequests, status);
             }
         }
@@ -70,29 +66,29 @@ public class VacationRequestController {
     }
 
     //POST /newRequest
-    @Operation(summary = "Create a New Vacation Request")
+    @Operation(summary = "Create a new Vacation Request")
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('user', 'administrator')")
     public ResponseEntity<VacationRequest> createVacationRequest(@RequestBody VacationRequest newRequest,
                                                                  @AuthenticationPrincipal Jwt principal) {
         HttpStatus status;
         VacationRequest request = new VacationRequest();
-        Employee requestOwner = employeeRepository.getById(1);
-        request.title = newRequest.title;
-        request.dateCreated = newRequest.dateCreated;
-        request.periodStart = newRequest.periodStart;
-        request.periodEnd = newRequest.periodEnd;
+        Employee requestOwner = employeeRepository.getById(principal.getSubject());
+        request.setTitle(newRequest.getTitle());
+        request.setDateCreated(newRequest.getDateCreated());
+        request.setPeriodStart(newRequest.getPeriodStart());
+        request.setPeriodEnd(newRequest.getPeriodEnd());
         request.comment = newRequest.comment;
 
         //employee that made newRequest should be passed as well
-        request.owner = requestOwner;
+        request.setOwner(requestOwner);
         requestRepository.save(newRequest);
         status = HttpStatus.OK;
         return new ResponseEntity<>(request, status);
     }
 
     //GET /request/:request_id
-    @Operation(summary = "Get request by id")
+    @Operation(summary = "Get Vacation request by id")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('user', 'administrator')")
     public ResponseEntity<VacationRequest> getRequest(@PathVariable Integer id,
@@ -110,7 +106,8 @@ public class VacationRequestController {
 
             //if request is from current employee or user is admin or request is approved return request
             if (signedInRole.contains("administrator")
-                    || returnRequest.owner.employeeId != 1 || returnRequest.status == Status.APPROVED) {
+                    || returnRequest.owner.getEmployeeId().equals(principal.getSubject())
+                    || returnRequest.getStatus() == Status.APPROVED) {
                 status = HttpStatus.OK;
                 return new ResponseEntity<>(returnRequest, status);
             }else{
@@ -121,9 +118,9 @@ public class VacationRequestController {
     }
 
     //PATCH /request/:request_id
-    @Operation(summary = "Update vacation request")
+    @Operation(summary = "Update Vacation request")
     @PatchMapping("update/{id}")
-    @PreAuthorize("hasAnyrole('user', 'administrator')")
+    @PreAuthorize("hasAnyRole('user', 'administrator')")
     public ResponseEntity<VacationRequest> updateRequestById(@PathVariable Integer id,
                                                              @RequestBody VacationRequest newRequest,
                                                              @AuthenticationPrincipal Jwt principal) {
@@ -137,19 +134,18 @@ public class VacationRequestController {
             VacationRequest returnRequest = returnRequestRepo.get();
 
             //only request owner can make updates before status is Approved or Denied
-            if(signedInRole.contains("user")
-                    && returnRequest.owner.employeeId != 1
-                    && returnRequest.status.equals(Status.PENDING)) {
-                if (newRequest.title != null) {
-                    returnRequest.title = newRequest.title;
+            if(returnRequest.owner.getEmployeeId().equals(principal.getSubject())
+                    && returnRequest.getStatus().equals(Status.PENDING)) {
+                if (newRequest.getTitle() != null) {
+                    returnRequest.setTitle(newRequest.getTitle());
                 }
-                if (newRequest.periodStart != null) {
-                    returnRequest.periodStart = newRequest.periodStart;
+                if (newRequest.getPeriodStart() != null) {
+                    returnRequest.setPeriodStart(newRequest.getPeriodStart());
                 }
-                if (newRequest.periodEnd != null) {
-                    returnRequest.periodEnd = newRequest.periodEnd;
+                if (newRequest.getPeriodEnd() != null) {
+                    returnRequest.setPeriodEnd(newRequest.getPeriodEnd());
                 }
-                if (newRequest.comment != null) {
+                if (newRequest.comment.size() != 0) {
                     for (Comment newComment : newRequest.comment) {
                         returnRequest.comment.add(newComment);
                     }
@@ -157,14 +153,14 @@ public class VacationRequestController {
             }
             //only admin can update request state give HttpStatus.FORBIDDEN as response
             if(signedInRole.contains("administrator")
-                        && returnRequest.owner.employeeId != 1)
+                        && !returnRequest.owner.getEmployeeId().equals(principal.getSubject()))
             {
-                if(newRequest.status != null){
-                    returnRequest.status = newRequest.status;
+                if(newRequest.getStatus() != null){
+                    returnRequest.setStatus(newRequest.getStatus());
                 }
                 // the admin and time of update should be recorded on the request object
-                returnRequest.moderator = employeeRepository.getById(1);
-                returnRequest.dateUpdated = new Date();
+                returnRequest.setModerator(employeeRepository.getById(principal.getSubject()));
+                returnRequest.setDateUpdated(new Date());
                 status = HttpStatus.OK;
             } else{
                 status = HttpStatus.FORBIDDEN;
@@ -180,7 +176,7 @@ public class VacationRequestController {
     }
 
     //DELETE /request/:request_id
-    @Operation(summary = "Delete a vacation request")
+    @Operation(summary = "Delete a Vacation request")
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('administrator')")
     public ResponseEntity<String> deleteRequest(@PathVariable Integer id){
