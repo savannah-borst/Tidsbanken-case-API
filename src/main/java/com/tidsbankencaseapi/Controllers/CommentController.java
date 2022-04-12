@@ -2,6 +2,7 @@ package com.tidsbankencaseapi.Controllers;
 
 import com.tidsbankencaseapi.Models.Comment;
 import com.tidsbankencaseapi.Models.Employee;
+import com.tidsbankencaseapi.Models.VacationRequest;
 import com.tidsbankencaseapi.Repositories.CommentRepository;
 import com.tidsbankencaseapi.Repositories.EmployeeRepository;
 import com.tidsbankencaseapi.Repositories.VacationRequestRepository;
@@ -24,10 +25,16 @@ import java.util.List;
 @SecurityRequirement(name = "keycloak_implicit")
 public class CommentController {
 
-    @Autowired
-    private CommentRepository commentRepository;
-    private VacationRequestRepository requestRepository;
-    private EmployeeRepository employeeRepository;
+    private final CommentRepository commentRepository;
+    private final VacationRequestRepository requestRepository;
+    private final EmployeeRepository employeeRepository;
+
+    public CommentController (CommentRepository commentRepository, VacationRequestRepository requestRepository, EmployeeRepository employeeRepository) {
+        this.requestRepository = requestRepository;
+        this.employeeRepository = employeeRepository;
+        this.commentRepository = commentRepository;
+    }
+
 
     //GET /request/:request_id/comment
     @Operation(summary = "Get all comments from a request")
@@ -41,8 +48,8 @@ public class CommentController {
         List<String> signedInRole = principal.getClaimAsStringList("roles"); //get roles from logged in employee
         String currentEmployeeId = principal.getClaimAsString("sub"); //Logged in employee ID
         List<Comment> comments = new ArrayList<>();
-
-        System.out.println(requestRepository.findById(requestId).get().employee.employeeId);
+        VacationRequest testRequest = requestRepository.findById(requestId).get();
+        Employee testEmployee = testRequest.owner;
 
          //requestRepository.findById(requestId).get().employee.employeeId ==> returns int not string
         //if request exists
@@ -50,8 +57,8 @@ public class CommentController {
             status = HttpStatus.NOT_FOUND;
         } else {
             //if admin or employeeId is same as request ownerId get comments
-            if (signedInRole.contains("administrator") /*|| currentEmployeeId == requestRepository.findById(requestId).get().employee.employeeId*/) {
-                //comments = requestRepository.findById(id).get().getComments(); //Getter is not set yet in vacation requests
+            if (signedInRole.contains("administrator") || currentEmployeeId == requestRepository.findById(requestId).get().owner.employeeId) {
+                comments = requestRepository.findById(requestId).get().getComment();
                 status = HttpStatus.OK;
             } else {
                 status = HttpStatus.FORBIDDEN;
@@ -61,29 +68,13 @@ public class CommentController {
         return new ResponseEntity<>(comments, status);
     }
 
-    //POST /request/:request_id/comment
+    /*//POST /request/:request_id/comment
     @Operation(summary = "Add comment")
     @PostMapping("/request/{requestId}/add")
     @PreAuthorize("hasAnyRole('user', 'administrator')")//ADMIN / USER protected
     public ResponseEntity<Comment> addComment(@PathVariable Integer requestId, @RequestBody Comment comment, @AuthenticationPrincipal Jwt principal) {
 
-        HttpStatus status;
-        List<String> signedInRole = principal.getClaimAsStringList("roles"); //get roles from logged in employee
-        String currentEmployeeId = principal.getClaimAsString("sub"); //Logged in employee ID
 
-        //if request does not exists OR comment does exist return NOTFOUND
-        if (!requestRepository.existsById(requestId) || commentRepository.existsById(comment.commentId)) {
-            status = HttpStatus.NOT_FOUND;
-        } else {
-            //if admin or employeeId is same as request ownerId add comment
-            if (signedInRole.contains("administrator") /*|| currentEmployeeId == */ ) {
-                comment = commentRepository.save(comment);
-                status  = HttpStatus.OK;
-            } else {
-                status = HttpStatus.FORBIDDEN;
-            }
-        }
-        return new ResponseEntity<>(comment, status);
     }
 
     //GET /request/:request_id/comment/:comment_id
@@ -92,25 +83,7 @@ public class CommentController {
     @PreAuthorize("hasAnyRole('user', 'administrator')")//ADMIN / USER protected
     public ResponseEntity<Comment> getSpecificComment(@PathVariable Integer requestId, @PathVariable Integer commentId, @AuthenticationPrincipal Jwt principal) {
 
-        HttpStatus status;
-        List<String> signedInRole = principal.getClaimAsStringList("roles"); //get roles from logged in employee
-        String currentEmployeeId = principal.getClaimAsString("sub"); //Logged in employee ID
-        Comment comment = new Comment();
 
-        //if request does not exists OR comment does exist return NOTFOUND
-        if (!requestRepository.existsById(requestId) || commentRepository.existsById(commentId)) {
-            status = HttpStatus.NOT_FOUND;
-        } else {
-            //if admin or employeeId is same as request ownerId add comment
-            if (signedInRole.contains("administrator") /*|| currentEmployeeId == */) {
-                comment = commentRepository.findById(commentId).get();
-                status  = HttpStatus.OK;
-            } else {
-                status = HttpStatus.FORBIDDEN;
-            }
-        }
-
-        return new ResponseEntity<>(comment, status);
     }
 
     //PATCH /request/:request_id/comment/:comment_id
@@ -121,21 +94,7 @@ public class CommentController {
 
         //24 HOUR RULE
 
-        HttpStatus status;
-        Comment returnComment = commentRepository.findById(commentId).get();
-        String currentEmployeeId = principal.getClaimAsString("sub"); //Logged in employee ID
 
-        //check if pathvariable commentId equals requestbody commentId
-        if (!commentId.equals(comment.commentId)) {
-            status = HttpStatus.BAD_REQUEST;
-            return new ResponseEntity<>(returnComment, status);
-        } else {
-            //if logged in employee is comment owner change it else return FORBIDDEN
-            //can't get comment.employeeId ? relatie anders zetten
-            status = HttpStatus.OK;
-        }
-
-        return new ResponseEntity<>(returnComment, status);
     }
 
     //DELETE /request/:request_id/comment/:comment_id
@@ -146,18 +105,6 @@ public class CommentController {
 
         //24 HOUR RULE
 
-        HttpStatus status;
-        Comment comment = commentRepository.findById(commentId).get();
-        String currentEmployeeId = principal.getClaimAsString("sub"); //Logged in employee ID
 
-        //if comment does not exist
-        if (!commentRepository.existsById(commentId) || !requestRepository.existsById(commentId)) {
-            status = HttpStatus.BAD_REQUEST;
-        } else {
-            //If logged in employee is owner of comment delete else FORBIDDEN
-            status = HttpStatus.OK;
-        }
-
-        return new ResponseEntity<>(comment, status);
-    }
+    }*/
 }
