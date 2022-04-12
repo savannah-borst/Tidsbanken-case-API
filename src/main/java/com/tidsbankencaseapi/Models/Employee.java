@@ -49,7 +49,7 @@ public class Employee {
         return null;
     }
 
-    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     public List<VacationRequest> vacationRequests = this.getVacationRequests();
 
 
