@@ -42,21 +42,23 @@ public class CommentController {
         String currentEmployeeId = principal.getClaimAsString("sub"); //Logged in employee ID
         List<Comment> comments = new ArrayList<>();
 
+        System.out.println(requestRepository.findById(requestId).get().employee.employeeId);
 
-        // requestRepository.findById(requestId).get().employee.employeeId ==> returns int not string
+         //requestRepository.findById(requestId).get().employee.employeeId ==> returns int not string
         //if request exists
         if (!requestRepository.existsById(requestId)) {
             status = HttpStatus.NOT_FOUND;
         } else {
             //if admin or employeeId is same as request ownerId get comments
-            if (signedInRole.contains("administrator") /*|| currentEmployeeId == */ ) {
+            if (signedInRole.contains("administrator") /*|| currentEmployeeId == requestRepository.findById(requestId).get().employee.employeeId*/) {
                 //comments = requestRepository.findById(id).get().getComments(); //Getter is not set yet in vacation requests
+                status = HttpStatus.OK;
             } else {
                 status = HttpStatus.FORBIDDEN;
             }
         }
 
-
+        return new ResponseEntity<>(comments, status);
     }
 
     //POST /request/:request_id/comment
@@ -86,7 +88,7 @@ public class CommentController {
 
     //GET /request/:request_id/comment/:comment_id
     @Operation(summary = "Get specific comment from a request")
-    @GetMapping("/request/{requestId}/{commentId]")
+    @GetMapping("/request/{requestId}/{commentId}")
     @PreAuthorize("hasAnyRole('user', 'administrator')")//ADMIN / USER protected
     public ResponseEntity<Comment> getSpecificComment(@PathVariable Integer requestId, @PathVariable Integer commentId, @AuthenticationPrincipal Jwt principal) {
 
@@ -107,6 +109,8 @@ public class CommentController {
                 status = HttpStatus.FORBIDDEN;
             }
         }
+
+        return new ResponseEntity<>(comment, status);
     }
 
     //PATCH /request/:request_id/comment/:comment_id
@@ -128,7 +132,10 @@ public class CommentController {
         } else {
             //if logged in employee is comment owner change it else return FORBIDDEN
             //can't get comment.employeeId ? relatie anders zetten
+            status = HttpStatus.OK;
         }
+
+        return new ResponseEntity<>(returnComment, status);
     }
 
     //DELETE /request/:request_id/comment/:comment_id
@@ -140,7 +147,7 @@ public class CommentController {
         //24 HOUR RULE
 
         HttpStatus status;
-        Comment returnComment = commentRepository.findById(commentId).get();
+        Comment comment = commentRepository.findById(commentId).get();
         String currentEmployeeId = principal.getClaimAsString("sub"); //Logged in employee ID
 
         //if comment does not exist
@@ -148,7 +155,9 @@ public class CommentController {
             status = HttpStatus.BAD_REQUEST;
         } else {
             //If logged in employee is owner of comment delete else FORBIDDEN
+            status = HttpStatus.OK;
         }
 
+        return new ResponseEntity<>(comment, status);
     }
 }
