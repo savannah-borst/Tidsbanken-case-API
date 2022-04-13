@@ -1,5 +1,7 @@
 package com.tidsbankencaseapi.Models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -27,13 +29,30 @@ public class Comment {
 
 
     //relation with VacationRequest
+    @JsonGetter("vacationRequest")
+    public String get_request() {
+        if (vacationRequest != null) {
+            return "Request: " + vacationRequest.getRequestId() + " " + vacationRequest.getTitle();
+        }
+        return null;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "vacationrequest_comment",
-            joinColumns = {@JoinColumn(name = "comment_id")},
-            inverseJoinColumns = {@JoinColumn(name = "request_id")}
-    )
+    @JoinColumn(name = "request_id")
     public VacationRequest vacationRequest;
+
+    //Relation Employee
+    @JsonGetter("commentOwner")
+    public String get_owner() {
+        if (commentOwner != null) {
+            return "Owner: " + commentOwner.getEmployeeId() + " " + commentOwner.getFirst_name() + " " + commentOwner.getLast_name();
+        }
+        return null;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "commentOwner_id")
+    public Employee commentOwner;
 
     //-----GETTERS-----
     public int getCommentId() {

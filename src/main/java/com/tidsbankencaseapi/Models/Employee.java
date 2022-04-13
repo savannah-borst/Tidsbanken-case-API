@@ -56,9 +56,18 @@ public class Employee {
 
 
     //Relation with Comment
-    @OneToMany
-    @JoinColumn(name = "employee_id")
-    public List<Comment> comments;
+    @JsonGetter("comments")
+    public List<String> get_comments() {
+        if (comments != null) {
+            return comments.stream()
+                    .map(commentItem -> {
+                        return commentItem.getCommentId() + " " + commentItem.getMessage();
+                    }).collect(Collectors.toList());
+        }
+        return null;
+    }
+    @OneToMany(mappedBy = "commentOwner", fetch = FetchType.LAZY)
+    public List<Comment> comments = this.getComments();
 
 
     //-----GETTERS-----

@@ -54,11 +54,6 @@ public class VacationRequest {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "employee_vacationrequest",
-            joinColumns = {@JoinColumn(name = "request_id")},
-            inverseJoinColumns = {@JoinColumn(name = "owner_id")}
-    )
     @JoinColumn(name = "owner_id")
     public Employee owner;
 
