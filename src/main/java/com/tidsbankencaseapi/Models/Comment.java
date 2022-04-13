@@ -1,10 +1,11 @@
 package com.tidsbankencaseapi.Models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 public class Comment {
@@ -23,18 +24,35 @@ public class Comment {
     private Date dateCreated;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column
     private Date dateUpdated;
 
-    //relation with Employee
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "commentOwner_id")
-    private Employee commentOwner;
 
     //relation with VacationRequest
+    @JsonGetter("vacationRequest")
+    public String get_request() {
+        if (vacationRequest != null) {
+            return "Request: " + vacationRequest.getRequestId() + " " + vacationRequest.getTitle();
+        }
+        return null;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
-    private VacationRequest vacationRequest;
+    public VacationRequest vacationRequest;
+
+    //Relation Employee
+    @JsonGetter("commentOwner")
+    public String get_owner() {
+        if (commentOwner != null) {
+            return "Owner: " + commentOwner.getEmployeeId() + " " + commentOwner.getFirst_name() + " " + commentOwner.getLast_name();
+        }
+        return null;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "commentOwner_id")
+    public Employee commentOwner;
 
     //-----GETTERS-----
     public int getCommentId() {
@@ -52,8 +70,6 @@ public class Comment {
     public Date getDateUpdated() {
         return dateUpdated;
     }
-
-    public Employee getCommentOwner() {return commentOwner;}
 
     public VacationRequest getVacationRequest() {
         return vacationRequest;
@@ -76,9 +92,11 @@ public class Comment {
         this.dateUpdated = dateUpdated;
     }
 
-    public void setCommentOwner(Employee commentOwner) {this.commentOwner = commentOwner;}
-
     public void setVacationRequest(VacationRequest vacationRequest) {
         this.vacationRequest = vacationRequest;
+    }
+
+    public void setCommentOwner(Employee commentOwner) {
+        this.commentOwner = commentOwner;
     }
 }

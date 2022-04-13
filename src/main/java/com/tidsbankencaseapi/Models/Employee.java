@@ -50,14 +50,25 @@ public class Employee {
         return null;
     }
 
-    @OneToMany(mappedBy = "requestOwner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public List<VacationRequest> vacationRequests = this.getVacationRequests();
 
+
     //Relation with Comment
+    @JsonGetter("comments")
+    public List<String> get_comments() {
+        if (comments != null) {
+            return comments.stream()
+                    .map(commentItem -> {
+                        return commentItem.getCommentId() + " " + commentItem.getMessage();
+                    }).collect(Collectors.toList());
+        }
+        return null;
+    }
     @OneToMany(mappedBy = "commentOwner", fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    public List<Comment> comments;
+    public List<Comment> comments = this.getComments();
+
 
     //-----GETTERS-----
     public String getEmployeeId() {
@@ -91,6 +102,7 @@ public class Employee {
     public List<Comment> getComments() {
         return comments;
     }
+
 
     //-----SETTERS-----
     public void setEmployeeId(String employeeId) {
