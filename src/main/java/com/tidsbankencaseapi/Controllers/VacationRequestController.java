@@ -72,36 +72,37 @@ public class VacationRequestController {
     public ResponseEntity<VacationRequest> createVacationRequest(@RequestBody VacationRequest newRequest,
                                                                  @AuthenticationPrincipal Jwt principal) {
         HttpStatus status;
-        VacationRequest request = new VacationRequest();
-        Employee requestOwner = employeeRepository.getById(principal.getSubject());
-        request.setTitle(newRequest.getTitle());
-        request.setDateCreated(newRequest.getDateCreated());
-        request.setPeriodStart(newRequest.getPeriodStart());
-        request.setPeriodEnd(newRequest.getPeriodEnd());
-        request.comment = newRequest.comment;
 
-        //employee that made newRequest should be passed as well
-        request.setOwner(requestOwner);
-        requestRepository.save(newRequest);
-        status = HttpStatus.OK;
-        return new ResponseEntity<>(request, status);
+        //Get the employee who made the vacation request
+        Employee requestOwner = employeeRepository.getById(principal.getSubject());
+
+        if(newRequest.getRequestId() == null){
+            //employee that made newRequest should be passed as well
+            newRequest.setOwner(requestOwner);
+            requestRepository.save(newRequest);
+            status = HttpStatus.CREATED;
+            return new ResponseEntity<>(newRequest, status);
+        } else{
+            status = HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>(status);
+        }
     }
 
     //GET /request/:request_id
     @Operation(summary = "Get Vacation request by id")
-    @GetMapping("/{id}")
+    @GetMapping("/{request_id}")
     @PreAuthorize("hasAnyRole('user', 'administrator')")
-    public ResponseEntity<VacationRequest> getRequest(@PathVariable Integer id,
+    public ResponseEntity<VacationRequest> getRequestById(@PathVariable Integer request_id,
                                                       @AuthenticationPrincipal Jwt principal) {
         HttpStatus status;
 
         //AUTH roles
         List<String> signedInRole = principal.getClaimAsStringList("roles");
 
-        if (!requestRepository.existsById(id)) {
+        if (!requestRepository.existsById(request_id)) {
             status = HttpStatus.NOT_FOUND;
         } else {
-            Optional<VacationRequest> returnRequestRepo = requestRepository.findById(id);
+            Optional<VacationRequest> returnRequestRepo = requestRepository.findById(request_id);
             VacationRequest returnRequest = returnRequestRepo.get();
 
             //if request is from current employee or user is admin or request is approved return request
@@ -119,9 +120,9 @@ public class VacationRequestController {
 
     //PATCH /request/:request_id
     @Operation(summary = "Update Vacation request")
-    @PatchMapping("update/{id}")
+    @PatchMapping("update/{request_id}")
     @PreAuthorize("hasAnyRole('user', 'administrator')")
-    public ResponseEntity<VacationRequest> updateRequestById(@PathVariable Integer id,
+    public ResponseEntity<VacationRequest> updateRequestById(@PathVariable Integer request_id,
                                                              @RequestBody VacationRequest newRequest,
                                                              @AuthenticationPrincipal Jwt principal) {
         HttpStatus status;
@@ -129,8 +130,8 @@ public class VacationRequestController {
         //AUTH roles
         List<String> signedInRole = principal.getClaimAsStringList("roles");
 
-        if (requestRepository.existsById(id)) {
-            Optional<VacationRequest> returnRequestRepo = requestRepository.findById(id);
+        if (requestRepository.existsById(request_id)) {
+            Optional<VacationRequest> returnRequestRepo = requestRepository.findById(request_id);
             VacationRequest returnRequest = returnRequestRepo.get();
 
             //only request owner can make updates before status is Approved or Denied
@@ -145,8 +146,8 @@ public class VacationRequestController {
                 if (newRequest.getPeriodEnd() != null) {
                     returnRequest.setPeriodEnd(newRequest.getPeriodEnd());
                 }
-                if (newRequest.comment.size() != 0) {
-                    for (Comment newComment : newRequest.comment) {
+                if (newRequest.getComment() != null) {
+                    for (Comment newComment : newRequest.getComment()) {
                         returnRequest.comment.add(newComment);
                     }
                 }
@@ -161,34 +162,35 @@ public class VacationRequestController {
                 // the admin and time of update should be recorded on the request object
                 returnRequest.setModerator(employeeRepository.getById(principal.getSubject()));
                 returnRequest.setDateUpdated(new Date());
-                status = HttpStatus.OK;
             } else{
                 status = HttpStatus.FORBIDDEN;
+                return new ResponseEntity<>(status);
             }
             requestRepository.save(returnRequest);
-            status = HttpStatus.NO_CONTENT;
+            status = HttpStatus.OK;
             return new ResponseEntity<>(returnRequest,status);
         }
         else{
             status = HttpStatus.BAD_REQUEST;
             return new ResponseEntity<>(status);
         }
+
     }
 
     //DELETE /request/:request_id
     @Operation(summary = "Delete a Vacation request")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{request_id}")
     @PreAuthorize("hasRole('administrator')")
-    public ResponseEntity<String> deleteRequest(@PathVariable Integer id){
+    public ResponseEntity<String> deleteRequest(@PathVariable Integer request_id){
         HttpStatus status;
         String response;
 
-        if (!requestRepository.existsById(id)) {
+        if (!requestRepository.existsById(request_id)) {
             status = HttpStatus.BAD_REQUEST;
             response = "This request doesn't exist.";
         } else {
-            requestRepository.deleteById(id);
-            status = HttpStatus.OK;
+            requestRepository.deleteById(request_id);
+            status = HttpStatus.NO_CONTENT;
             response = "Request deleted";
         }
 

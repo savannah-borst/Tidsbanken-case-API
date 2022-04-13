@@ -1,6 +1,8 @@
 package com.tidsbankencaseapi.Models;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +16,7 @@ public class VacationRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int requestId;
+    private Integer requestId;
 
     @NotBlank
     @Size(max = 100)
@@ -47,18 +49,13 @@ public class VacationRequest {
     @JsonGetter("owner")
     public String get_owner() {
         if (owner != null) {
-            return "Owner: " + owner.getEmployeeId() + " " + owner.getFirst_name() + " " + owner.getLast_name();
+            return "Vacation requested by owner: " + owner.getFirst_name() + " " + owner.getLast_name();
         } else {
             return null;
         }
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "employee_vacationrequest",
-            joinColumns = {@JoinColumn(name = "request_id")},
-            inverseJoinColumns = {@JoinColumn(name = "owner_id")}
-    )
     @JoinColumn(name = "owner_id")
     public Employee owner = this.getOwner();
 
@@ -67,7 +64,7 @@ public class VacationRequest {
     @JsonGetter("moderator")
     public String moderator() {
         if (moderator != null) {
-            return "Moderator: " + moderator.getEmployeeId() + " " + moderator.getFirst_name() + " " + moderator.getLast_name();
+            return "Vacation request moderatored by: " + moderator.getFirst_name() + " " + moderator.getLast_name();
         } else {
             return null;
         }
@@ -90,10 +87,11 @@ public class VacationRequest {
     }
 
     @OneToMany(mappedBy = "vacationRequest", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public List<Comment> comment = this.getComment();
 
     //-----GETTERS-----
-    public int getRequestId() {
+    public Integer getRequestId() {
         return requestId;
     }
 
