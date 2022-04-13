@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("${server.cors.application_origin}")
 @RequestMapping("/ineligibleperiod")
 @SecurityRequirement(name = "keycloak_implicit")
 public class IneligiblePeriodController {

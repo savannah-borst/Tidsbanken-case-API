@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
+@CrossOrigin("${server.cors.application_origin}")
 @RequestMapping("/request/{requestId}")
 @SecurityRequirement(name = "keycloak_implicit")
 public class CommentController {
