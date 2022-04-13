@@ -24,7 +24,7 @@ public class Comment {
     private Date dateCreated;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column
     private Date dateUpdated;
 
 
@@ -94,5 +94,9 @@ public class Comment {
 
     public void setVacationRequest(VacationRequest vacationRequest) {
         this.vacationRequest = vacationRequest;
+    }
+
+    public void setCommentOwner(Employee commentOwner) {
+        this.commentOwner = commentOwner;
     }
 }
