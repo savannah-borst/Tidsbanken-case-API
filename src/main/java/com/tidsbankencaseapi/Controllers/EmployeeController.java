@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin("${server.cors.application_origin}")
 @RequestMapping("/employee")
 @SecurityRequirement(name = "keycloak_implicit")
 public class EmployeeController {
