@@ -38,7 +38,6 @@ public class VacationRequestController {
     @PreAuthorize("hasAnyRole('user', 'administrator')")
     public ResponseEntity<List<VacationRequest>> getListRequest(@AuthenticationPrincipal Jwt principal) {
         //Optionally accepts appropriate query parameters to search and limit responses
-
         List<VacationRequest> allRequests = requestRepository.findAll();
         HttpStatus status = HttpStatus.OK;
         Employee vacationRequestsOwner = employeeRepository.getById(principal.getSubject());
@@ -58,7 +57,7 @@ public class VacationRequestController {
             }
             else{
                 List<VacationRequest> filteredRequests = requestRepository
-                        .getVacationRequestsByOwnerOrStatus(vacationRequestsOwner, Status.APPROVED);
+                        .getVacationRequestsByRequestOwnerOrStatus(vacationRequestsOwner, Status.APPROVED);
                 response = new ResponseEntity<>(filteredRequests, status);
             }
         }
@@ -78,7 +77,7 @@ public class VacationRequestController {
 
         if(newRequest.getRequestId() == null){
             //employee that made newRequest should be passed as well
-            newRequest.setOwner(requestOwner);
+            newRequest.setRequestOwner(requestOwner);
             requestRepository.save(newRequest);
             status = HttpStatus.CREATED;
             return new ResponseEntity<>(newRequest, status);
@@ -107,7 +106,7 @@ public class VacationRequestController {
 
             //if request is from current employee or user is admin or request is approved return request
             if (signedInRole.contains("administrator")
-                    || returnRequest.owner.getEmployeeId().equals(principal.getSubject())
+                    || returnRequest.getRequestOwner().getEmployeeId().equals(principal.getSubject())
                     || returnRequest.getStatus() == Status.APPROVED) {
                 status = HttpStatus.OK;
                 return new ResponseEntity<>(returnRequest, status);
@@ -134,9 +133,18 @@ public class VacationRequestController {
             Optional<VacationRequest> returnRequestRepo = requestRepository.findById(request_id);
             VacationRequest returnRequest = returnRequestRepo.get();
 
-            //only request owner can make updates before status is Approved or Denied
-            if(returnRequest.owner.getEmployeeId().equals(principal.getSubject())
-                    && returnRequest.getStatus().equals(Status.PENDING)) {
+            //only admin can update request state give HttpStatus.FORBIDDEN as response
+            if(signedInRole.contains("administrator")
+                        && !returnRequest.getRequestOwner().getEmployeeId().equals(principal.getSubject()))
+            {
+                if(newRequest.getStatus() != null){
+                    returnRequest.setStatus(newRequest.getStatus());
+                }
+                // the admin and time of update should be recorded on the request object
+                returnRequest.setModerator(employeeRepository.getById(principal.getSubject()));
+                returnRequest.setDateUpdated(new Date());
+            } else if(returnRequest.getRequestOwner().getEmployeeId().equals(principal.getSubject())
+                    && returnRequest.getStatus() == Status.PENDING){
                 if (newRequest.getTitle() != null) {
                     returnRequest.setTitle(newRequest.getTitle());
                 }
@@ -152,23 +160,14 @@ public class VacationRequestController {
                     }
                 }
             }
-            //only admin can update request state give HttpStatus.FORBIDDEN as response
-            if(signedInRole.contains("administrator")
-                        && !returnRequest.owner.getEmployeeId().equals(principal.getSubject()))
-            {
-                if(newRequest.getStatus() != null){
-                    returnRequest.setStatus(newRequest.getStatus());
-                }
-                // the admin and time of update should be recorded on the request object
-                returnRequest.setModerator(employeeRepository.getById(principal.getSubject()));
-                returnRequest.setDateUpdated(new Date());
-            } else{
+            else{
                 status = HttpStatus.FORBIDDEN;
                 return new ResponseEntity<>(status);
             }
             requestRepository.save(returnRequest);
             status = HttpStatus.OK;
             return new ResponseEntity<>(returnRequest,status);
+
         }
         else{
             status = HttpStatus.BAD_REQUEST;

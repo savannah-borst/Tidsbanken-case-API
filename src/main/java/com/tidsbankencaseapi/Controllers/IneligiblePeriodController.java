@@ -1,9 +1,6 @@
 package com.tidsbankencaseapi.Controllers;
 
-import com.nimbusds.jwt.JWT;
-import com.tidsbankencaseapi.Models.Employee;
 import com.tidsbankencaseapi.Models.IneligiblePeriod;
-import com.tidsbankencaseapi.Repositories.EmployeeRepository;
 import com.tidsbankencaseapi.Repositories.IneligiblePeriodRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,11 +20,9 @@ import java.util.Optional;
 public class IneligiblePeriodController {
 
     private final IneligiblePeriodRepository ineligiblePeriodRepository;
-    private final EmployeeRepository employeeRepository;
 
-    public IneligiblePeriodController(IneligiblePeriodRepository ineligiblePeriodRepository, EmployeeRepository employeeRepository) {
+    public IneligiblePeriodController(IneligiblePeriodRepository ineligiblePeriodRepository) {
         this.ineligiblePeriodRepository = ineligiblePeriodRepository;
-        this.employeeRepository = employeeRepository;
 
     }
 
@@ -62,11 +57,7 @@ public class IneligiblePeriodController {
 
         HttpStatus status;
 
-        //Get the employee who created this ineligible period
-        Employee creator = employeeRepository.getById(principal.getSubject());
-
         if(!ineligiblePeriodRepository.existsById(newIneligiblePeriod.getIneligiblePeriodId())){
-            newIneligiblePeriod.setCreator(creator);
             ineligiblePeriodRepository.save(newIneligiblePeriod);
             status = HttpStatus.CREATED;
             return new ResponseEntity<>(newIneligiblePeriod, status);
@@ -108,9 +99,6 @@ public class IneligiblePeriodController {
 
         HttpStatus status;
 
-        //Get employee who updated the ineligible period
-        Employee updater = employeeRepository.getById(principal.getSubject());
-
         //Check if ineligible period exists
         if(!ineligiblePeriodRepository.existsById(ip_id)){
             status = HttpStatus.NOT_FOUND;
@@ -125,7 +113,6 @@ public class IneligiblePeriodController {
             if(newIneligiblePeriod.getPeriodEnd() != null){
                 ineligiblePeriod.setPeriodEnd(newIneligiblePeriod.getPeriodEnd());
             }
-            ineligiblePeriod.setCreator(updater);
             ineligiblePeriodRepository.save(ineligiblePeriod);
             status = HttpStatus.CREATED;
             return new ResponseEntity<>(ineligiblePeriod, status);

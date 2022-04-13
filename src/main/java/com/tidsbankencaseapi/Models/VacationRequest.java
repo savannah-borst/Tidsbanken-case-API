@@ -46,18 +46,18 @@ public class VacationRequest {
 
 
     //Relation with Owner
-    @JsonGetter("owner")
-    public String get_owner() {
-        if (owner != null) {
-            return "Vacation requested by owner: " + owner.getFirst_name() + " " + owner.getLast_name();
+    @JsonGetter("requestOwner")
+    public String get_requestOwner() {
+        if (requestOwner != null) {
+            return "Vacation requested by owner: " + requestOwner.getFirst_name() + " " + requestOwner.getLast_name();
         } else {
             return null;
         }
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    public Employee owner = this.getOwner();
+    @JoinColumn(name = "request_owner_id")
+    private Employee requestOwner;
 
 
     //Relation with admin
@@ -72,7 +72,7 @@ public class VacationRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "moderator_id")
-    public Employee moderator;
+    private Employee moderator;
 
     //Relation with Comment
     @JsonGetter("comment")
@@ -88,7 +88,7 @@ public class VacationRequest {
 
     @OneToMany(mappedBy = "vacationRequest", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    public List<Comment> comment = this.getComment();
+    public List<Comment> comment;
 
     //-----GETTERS-----
     public Integer getRequestId() {
@@ -119,8 +119,8 @@ public class VacationRequest {
         return status;
     }
 
-    public Employee getOwner() {
-        return owner;
+    public Employee getRequestOwner() {
+        return requestOwner;
     }
 
     public Employee getModerator() {
@@ -160,8 +160,8 @@ public class VacationRequest {
         this.status = status;
     }
 
-    public void setOwner(Employee owner) {
-        this.owner = owner;
+    public void setRequestOwner(Employee owner) {
+        this.requestOwner = owner;
     }
 
     public void setModerator(Employee moderator) {

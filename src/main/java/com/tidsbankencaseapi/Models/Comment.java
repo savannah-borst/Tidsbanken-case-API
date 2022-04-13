@@ -26,14 +26,15 @@ public class Comment {
     @Column(nullable = false)
     private Date dateUpdated;
 
+    //relation with Employee
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "commentOwner_id")
+    private Employee commentOwner;
+
     //relation with VacationRequest
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "vacationrequest_comment",
-            joinColumns = {@JoinColumn(name = "comment_id")},
-            inverseJoinColumns = {@JoinColumn(name = "request_id")}
-    )
-    public VacationRequest vacationRequest;
+    @JoinColumn(name = "request_id")
+    private VacationRequest vacationRequest;
 
     //-----GETTERS-----
     public int getCommentId() {
@@ -51,6 +52,8 @@ public class Comment {
     public Date getDateUpdated() {
         return dateUpdated;
     }
+
+    public Employee getCommentOwner() {return commentOwner;}
 
     public VacationRequest getVacationRequest() {
         return vacationRequest;
@@ -72,6 +75,8 @@ public class Comment {
     public void setDateUpdated(Date dateUpdated) {
         this.dateUpdated = dateUpdated;
     }
+
+    public void setCommentOwner(Employee commentOwner) {this.commentOwner = commentOwner;}
 
     public void setVacationRequest(VacationRequest vacationRequest) {
         this.vacationRequest = vacationRequest;

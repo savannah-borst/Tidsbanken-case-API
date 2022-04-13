@@ -50,16 +50,14 @@ public class Employee {
         return null;
     }
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "requestOwner", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public List<VacationRequest> vacationRequests = this.getVacationRequests();
 
-
     //Relation with Comment
-    @OneToMany
-    @JoinColumn(name = "employee_id")
+    @OneToMany(mappedBy = "commentOwner", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public List<Comment> comments;
-
 
     //-----GETTERS-----
     public String getEmployeeId() {
@@ -93,7 +91,6 @@ public class Employee {
     public List<Comment> getComments() {
         return comments;
     }
-
 
     //-----SETTERS-----
     public void setEmployeeId(String employeeId) {

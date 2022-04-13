@@ -23,20 +23,6 @@ public class IneligiblePeriod {
     @Column(nullable = false)
     private Date periodEnd;
 
-    //Relation with Employee
-    @NotBlank
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "creator_id")
-    private Employee creator;
-
-    @JsonGetter("creator")
-    public String get_creator() {
-        if (creator != null) {
-            return "Ineligible period created by: " + creator.getFirst_name();
-        }
-        return null;
-    }
-
     //-----GETTERS-----
     public int getIneligiblePeriodId() {
         return ineligiblePeriodId;
@@ -50,8 +36,6 @@ public class IneligiblePeriod {
         return periodEnd;
     }
 
-    public Employee getCreator() {return creator;}
-
     //-----SETTERS-----
     public void setIneligiblePeriodId(int ineligiblePeriodId) {
         this.ineligiblePeriodId = ineligiblePeriodId;
@@ -64,6 +48,4 @@ public class IneligiblePeriod {
     public void setPeriodEnd(Date periodEnd) {
         this.periodEnd = periodEnd;
     }
-
-    public void setCreator(Employee creator) {this.creator = creator;}
 }
