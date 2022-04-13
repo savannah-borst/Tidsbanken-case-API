@@ -55,7 +55,7 @@ public class CommentController {
             status = HttpStatus.NOT_FOUND;
         } else {
             //if admin or employeeId is same as request ownerId get comments
-            if (signedInRole.contains("administrator") || currentEmployeeId.equals(request.owner.getEmployeeId())) {
+            if (signedInRole.contains("administrator") || currentEmployeeId.equals(request.getRequestOwner().getEmployeeId())) {
                 //most recent first
                 comments = commentRepository.getAllByVacationRequestRequestIdOrderByDateCreatedDesc(requestId);
                 status = HttpStatus.OK;
@@ -87,7 +87,7 @@ public class CommentController {
             status = HttpStatus.BAD_REQUEST;
         } else {
             //if admin or employeeId is same as request ownerId add comment
-            if (signedInRole.contains("administrator") || currentEmployeeId.equals(request.owner.getEmployeeId()))  {
+            if (signedInRole.contains("administrator") || currentEmployeeId.equals(request.getRequestOwner().getEmployeeId()))  {
                 //set comment owner, request and createDate
                 comment.setCommentOwner(employeeRepository.findById(currentEmployeeId).get());
                 comment.setVacationRequest(request);
@@ -121,7 +121,7 @@ public class CommentController {
             status = HttpStatus.NOT_FOUND;
         } else if (requestId == commentRepository.findById(commentId).get().vacationRequest.getRequestId()) {
             //if admin or employeeId is same as request ownerId add comment
-            if (signedInRole.contains("administrator") || currentEmployeeId.equals(request.owner.getEmployeeId())) {
+            if (signedInRole.contains("administrator") || currentEmployeeId.equals(request.getRequestOwner().getEmployeeId())) {
                 comment = commentRepository.findById(commentId).get();
                 status  = HttpStatus.OK;
             } else {

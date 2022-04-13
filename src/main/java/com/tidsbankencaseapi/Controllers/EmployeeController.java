@@ -41,7 +41,7 @@ public class EmployeeController {
 
         //If employee does not exist BAD REQUEST else SEE OTHER
         if (!employeeRepository.existsById(currentEmployeeId)) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.NOT_FOUND;
         } else {
             status = HttpStatus.SEE_OTHER;
             headers.setLocation(location);
@@ -170,7 +170,7 @@ public class EmployeeController {
             status = HttpStatus.BAD_REQUEST;
         } else {
             //if user asking is admin or self delete else FORBIDDEN
-            if (signedInRole.contains("administrator") || currentEmployeeId == id) {
+            if (signedInRole.contains("administrator") || currentEmployeeId.equals(id)) {
                 employeeRepository.deleteById(id);
                 status = HttpStatus.OK;
             } else {

@@ -50,7 +50,7 @@ public class Employee {
         return null;
     }
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "requestOwner", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public List<VacationRequest> vacationRequests = this.getVacationRequests();
 
