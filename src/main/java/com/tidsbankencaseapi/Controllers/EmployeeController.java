@@ -55,7 +55,7 @@ public class EmployeeController {
     //POST /employee
     @Operation(summary = "Register Employee")
     @PostMapping("/register")
-    @PreAuthorize("hasAnyRole({'user', 'administrator'})")//ADMIN / USER protected
+    @PreAuthorize("hasAnyRole('administrator')")//ADMIN protected
     public ResponseEntity<Employee> registerEmployee(@RequestBody Employee employee) {
 
         //init
@@ -67,7 +67,7 @@ public class EmployeeController {
         //If employee does not exist save else BAD REQUEST
         if (!employeeRepository.existsById(employee.getEmployeeId())) {
             employee = employeeRepository.save(employee);
-            status = HttpStatus.OK;
+            status = HttpStatus.CREATED;
         } else {
             status = HttpStatus.BAD_REQUEST;
         }
@@ -90,10 +90,17 @@ public class EmployeeController {
         if (!employeeRepository.existsById(id)) {
             status = HttpStatus.NOT_FOUND;
         } else {
-            // if admin get everything else just firstname, lastname and pic
-            if (signedInRole.contains("administrator")) {
+            // if admin or same employee as id get everything else just firstname, lastname and pic
+            if (signedInRole.contains("administrator")){
                 employee = employeeRepository.findById(id).get();
-            } else {
+            }
+            if(principal.getSubject().equals(id)){
+                employee.setFirst_name(employeeRepository.findById(id).get().getFirst_name());
+                employee.setLast_name(employeeRepository.findById(id).get().getLast_name());
+                employee.setEmailAddress(employeeRepository.findById(id).get().getEmailAddress());
+                employee.setProfilePic(employeeRepository.findById(id).get().getProfilePic());
+            }
+            else {
                 employee.setFirst_name(employeeRepository.findById(id).get().getFirst_name());
                 employee.setLast_name(employeeRepository.findById(id).get().getLast_name());
                 employee.setProfilePic(employeeRepository.findById(id).get().getProfilePic());
@@ -108,7 +115,9 @@ public class EmployeeController {
     @Operation(summary = "Update Employee")
     @PatchMapping("/update/{id}")
     @PreAuthorize("hasAnyRole({'user', 'administrator'})")//ADMIN / USER protected
-    public ResponseEntity<Employee> updateEmployee(@PathVariable String id, @RequestBody Employee employee, @AuthenticationPrincipal Jwt principal) {
+    public ResponseEntity<Employee> updateEmployee(@PathVariable String id,
+                                                   @RequestBody Employee employee,
+                                                   @AuthenticationPrincipal Jwt principal) {
 
         //init
         HttpStatus status;
@@ -118,7 +127,7 @@ public class EmployeeController {
         //check if pathvariable id equals request employee id
         if (!id.equals(employee.getEmployeeId())) {
             status = HttpStatus.BAD_REQUEST;
-            return new ResponseEntity<>(returnEmployee, status);
+            return new ResponseEntity<>(employee, status);
 
         } else {
 
@@ -151,7 +160,6 @@ public class EmployeeController {
             employeeRepository.save(returnEmployee);
             status = HttpStatus.NO_CONTENT;
         }
-
         return new ResponseEntity<>(returnEmployee, status);
     }
 
@@ -197,10 +205,9 @@ public class EmployeeController {
         if (!employeeRepository.existsById(id)) {
             status = HttpStatus.BAD_REQUEST;
         } else  {
-            listRequests = employeeRepository.findById(id).get().getVacationRequests();
-            status = HttpStatus.OK;
+                listRequests = employeeRepository.findById(id).get().getVacationRequests();
+                status = HttpStatus.OK;
         }
-
         return new ResponseEntity<>(listRequests, status);
     }
 }

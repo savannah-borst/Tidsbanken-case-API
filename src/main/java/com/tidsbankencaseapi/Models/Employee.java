@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class Employee {
 
     @Id
+    @NotBlank
     private String employeeId;
 
     @NotBlank
@@ -66,7 +67,9 @@ public class Employee {
         }
         return null;
     }
+
     @OneToMany(mappedBy = "commentOwner", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public List<Comment> comments = this.getComments();
 
 
