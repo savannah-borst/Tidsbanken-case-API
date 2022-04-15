@@ -15,7 +15,6 @@ public class Setting {
     @Column(nullable = false)
     private int maxVacationDays;
 
-
     //Relation with Employee
     @OneToMany
     @JoinColumn(name = "setting_id")

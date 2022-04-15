@@ -1,7 +1,6 @@
 package com.tidsbankencaseapi.Controllers;
 
 import com.tidsbankencaseapi.Models.Comment;
-import com.tidsbankencaseapi.Models.Employee;
 import com.tidsbankencaseapi.Models.VacationRequest;
 import com.tidsbankencaseapi.Repositories.CommentRepository;
 import com.tidsbankencaseapi.Repositories.EmployeeRepository;
@@ -163,7 +162,6 @@ public class CommentController {
                 }
                 //set update time
                 returnComment.setDateUpdated(currentTime);
-
                 status = HttpStatus.OK;
             } else {
                 status = HttpStatus.FORBIDDEN;
