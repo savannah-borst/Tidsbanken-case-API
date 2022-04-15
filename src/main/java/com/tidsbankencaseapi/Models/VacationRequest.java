@@ -33,17 +33,15 @@ public class VacationRequest {
 
     @NotBlank
     @Column(nullable = false)
-    private Date dateCreated;
+    private Date dateCreated = new Date();
 
-    @NotBlank
-    @Column(nullable = false)
+    @Column
     private Date dateUpdated;
 
     @NotBlank
     @Column
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;
-
 
     //Relation with Owner
     @JsonGetter("requestOwner")
@@ -59,12 +57,11 @@ public class VacationRequest {
     @JoinColumn(name = "request_owner_id")
     private Employee requestOwner;
 
-
     //Relation with admin
     @JsonGetter("moderator")
     public String moderator() {
         if (moderator != null) {
-            return "Vacation request moderatored by: " + moderator.getFirst_name() + " " + moderator.getLast_name();
+            return "Vacation request moderated by: " + moderator.getFirst_name() + " " + moderator.getLast_name();
         } else {
             return null;
         }

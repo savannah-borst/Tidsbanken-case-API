@@ -39,7 +39,7 @@ public class VacationRequestController {
     @PreAuthorize("hasAnyRole('user', 'administrator')")
     public ResponseEntity<List<VacationRequest>> getListRequest(@AuthenticationPrincipal Jwt principal) {
         //Optionally accepts appropriate query parameters to search and limit responses
-        List<VacationRequest> allRequests = requestRepository.findAll();
+        List<VacationRequest> allRequests = requestRepository.OrderByPeriodStartAsc();
         HttpStatus status = HttpStatus.OK;
         Employee vacationRequestsOwner = employeeRepository.getById(principal.getSubject());
         ResponseEntity<List<VacationRequest>> response;
@@ -141,6 +141,7 @@ public class VacationRequestController {
                 if(newRequest.getStatus() != null){
                     returnRequest.setStatus(newRequest.getStatus());
                 }
+
                 // the admin and time of update should be recorded on the request object
                 returnRequest.setModerator(employeeRepository.getById(principal.getSubject()));
                 returnRequest.setDateUpdated(new Date());
