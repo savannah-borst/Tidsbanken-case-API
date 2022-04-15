@@ -37,7 +37,7 @@ public class EmployeeController {
         //init
         HttpStatus status;
         String currentEmployeeId = principal.getClaimAsString("sub");
-        URI location = new URI(String.format("https://api-tidsbanken-case.herokuapp.com/employee", currentEmployeeId));
+        URI location = new URI(String.format("https://api-tidsbanken-case.herokuapp.com/employee/%s", currentEmployeeId));
         HttpHeaders headers = new HttpHeaders();
 
         //If employee does not exist BAD REQUEST else SEE OTHER
@@ -90,11 +90,8 @@ public class EmployeeController {
         if (!employeeRepository.existsById(id)) {
             status = HttpStatus.NOT_FOUND;
         } else {
-            // if admin or same employee as id get everything else just firstname, lastname and pic
-            if (signedInRole.contains("administrator")){
-                employee = employeeRepository.findById(id).get();
-            }
-            if(principal.getSubject().equals(id)){
+            // if admin or same employee as id get everything except id else just firstname, lastname and pic
+            if (signedInRole.contains("administrator") || principal.getSubject().equals(id)){
                 employee.setFirst_name(employeeRepository.findById(id).get().getFirst_name());
                 employee.setLast_name(employeeRepository.findById(id).get().getLast_name());
                 employee.setEmailAddress(employeeRepository.findById(id).get().getEmailAddress());
@@ -107,7 +104,6 @@ public class EmployeeController {
             }
             status =HttpStatus.OK;
         }
-
         return new ResponseEntity<>(employee, status);
     }
 
@@ -203,10 +199,15 @@ public class EmployeeController {
 
         //if employee does not exist BAD REQUEST else get list of requests
         if (!employeeRepository.existsById(id)) {
-            status = HttpStatus.BAD_REQUEST;
-        } else  {
+            status = HttpStatus.NOT_FOUND;
+        } else {
+            if(!principal.getSubject().equals(id)){
+                status = HttpStatus.FORBIDDEN;
+            }
+            else{
                 listRequests = employeeRepository.findById(id).get().getVacationRequests();
                 status = HttpStatus.OK;
+            }
         }
         return new ResponseEntity<>(listRequests, status);
     }
