@@ -115,7 +115,7 @@ public class IneligiblePeriodController {
                 ineligiblePeriod.setPeriodEnd(newIneligiblePeriod.getPeriodEnd());
             }
             ineligiblePeriodRepository.save(ineligiblePeriod);
-            status = HttpStatus.CREATED;
+            status = HttpStatus.OK;
             return new ResponseEntity<>(ineligiblePeriod, status);
         }
     }
@@ -135,8 +135,8 @@ public class IneligiblePeriodController {
             return new ResponseEntity<>("Ineligible period not found", status);
         } else{
             ineligiblePeriodRepository.deleteById(ip_id);
-            status = HttpStatus.OK;
-            return new ResponseEntity<>("Ineligible period deleted", status);
+            status = HttpStatus.NO_CONTENT;
+            return new ResponseEntity<>( status);
         }
     }
 }
