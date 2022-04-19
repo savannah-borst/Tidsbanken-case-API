@@ -37,7 +37,7 @@ public class Employee {
     private String profilePic;
 
     @Column
-    private Boolean isAdmin;
+    private Boolean isAdmin = false;
 
     //Relation with Vacation Request
     @JsonGetter("vacationRequests")
