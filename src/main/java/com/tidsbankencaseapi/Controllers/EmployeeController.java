@@ -92,6 +92,7 @@ public class EmployeeController {
         } else {
             // if admin or same employee as id get everything except id else just firstname, lastname and pic
             if (signedInRole.contains("administrator") || principal.getSubject().equals(id)){
+                employee.setEmployeeId(employeeRepository.findById(id).get().getEmployeeId());
                 employee.setFirst_name(employeeRepository.findById(id).get().getFirst_name());
                 employee.setLast_name(employeeRepository.findById(id).get().getLast_name());
                 employee.setEmailAddress(employeeRepository.findById(id).get().getEmailAddress());
@@ -190,7 +191,7 @@ public class EmployeeController {
     @Operation(summary = "Get an specific Employee's requests")
     @GetMapping("/{id}/requests")
     @PreAuthorize("hasAnyRole({'user', 'administrator'})")//ADMIN / USER protected
-    public ResponseEntity<List<VacationRequest>> getEmployeeRequests(@PathVariable String id, @AuthenticationPrincipal Jwt principal) {
+    public ResponseEntity<List<VacationRequest>> getEmployeeRequests(@PathVariable String id, @RequestParam long limit, @AuthenticationPrincipal Jwt principal) {
         //Optionally accepts appropriate query parameters to search and limit the number of objects returned.
 
         //init
