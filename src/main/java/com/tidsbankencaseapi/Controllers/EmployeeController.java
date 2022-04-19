@@ -97,6 +97,7 @@ public class EmployeeController {
                 employee.setLast_name(employeeRepository.findById(id).get().getLast_name());
                 employee.setEmailAddress(employeeRepository.findById(id).get().getEmailAddress());
                 employee.setProfilePic(employeeRepository.findById(id).get().getProfilePic());
+                employee.setAdmin(employeeRepository.findById(id).get().getAdmin());
             }
             else {
                 employee.setFirst_name(employeeRepository.findById(id).get().getFirst_name());
