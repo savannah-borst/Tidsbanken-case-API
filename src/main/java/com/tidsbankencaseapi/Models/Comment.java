@@ -32,7 +32,7 @@ public class Comment {
     @JsonGetter("vacationRequest")
     public String get_request() {
         if (vacationRequest != null) {
-            return "Request: " + vacationRequest.getRequestId() + " " + vacationRequest.getTitle();
+            return "/vacation_request/" + vacationRequest.getRequestId();
         }
         return null;
     }
@@ -45,7 +45,7 @@ public class Comment {
     @JsonGetter("commentOwner")
     public String get_owner() {
         if (commentOwner != null) {
-            return "Owner: " + commentOwner.getEmployeeId() + " " + commentOwner.getFirst_name() + " " + commentOwner.getLast_name();
+            return "/employee/" + commentOwner.getEmployeeId();
         }
         return null;
     }

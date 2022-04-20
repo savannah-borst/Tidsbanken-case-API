@@ -47,7 +47,7 @@ public class VacationRequest {
     @JsonGetter("requestOwner")
     public String get_requestOwner() {
         if (requestOwner != null) {
-            return "Vacation requested by owner: " + requestOwner.getFirst_name() + " " + requestOwner.getLast_name();
+            return "/employee/" + requestOwner.getEmployeeId();
         } else {
             return null;
         }
@@ -61,7 +61,7 @@ public class VacationRequest {
     @JsonGetter("moderator")
     public String moderator() {
         if (moderator != null) {
-            return "Vacation request moderated by: " + moderator.getFirst_name() + " " + moderator.getLast_name();
+            return  "/employee/" + moderator.getEmployeeId();
         } else {
             return null;
         }
@@ -77,7 +77,7 @@ public class VacationRequest {
         if (comment != null) {
             return comment.stream()
                     .map(commentItem -> {
-                        return commentItem.getCommentId() + " " + commentItem.getMessage();
+                        return  "/request/" + commentItem.getVacationRequest().getRequestId() + "/comment/" + commentItem.getCommentId();
                     }).collect(Collectors.toList());
         }
         return null;

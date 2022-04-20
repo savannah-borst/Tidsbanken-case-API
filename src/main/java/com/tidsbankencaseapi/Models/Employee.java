@@ -45,8 +45,8 @@ public class Employee {
         if (vacationRequests != null) {
             return vacationRequests.stream()
                     .map(requestItem -> {
-                        return requestItem.getRequestId() + " " + requestItem.getTitle();
-                    }).collect(Collectors.toList());
+                              return requestItem.getRequestId() + " " + requestItem.getTitle();
+                            }).collect(Collectors.toList());
         }
         return null;
     }
