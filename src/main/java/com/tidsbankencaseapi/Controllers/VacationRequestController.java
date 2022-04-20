@@ -58,7 +58,7 @@ public class VacationRequestController {
             }
             else{
                 List<VacationRequest> filteredRequests = requestRepository
-                        .getVacationRequestsByRequestOwnerOrStatus(vacationRequestsOwner, Status.APPROVED);
+                        .getVacationRequestsByRequestOwnerOrStatusOrderByPeriodStartAsc(vacationRequestsOwner, Status.APPROVED);
                 response = new ResponseEntity<>(filteredRequests, status);
             }
         }

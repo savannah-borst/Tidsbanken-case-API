@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface VacationRequestRepository extends JpaRepository<VacationRequest, Integer> {
-    List<VacationRequest> getVacationRequestsByRequestOwnerOrStatus (Employee owner, Status status);
+    List<VacationRequest> getVacationRequestsByRequestOwnerOrStatusOrderByPeriodStartAsc (Employee owner, Status status);
     List<VacationRequest> OrderByPeriodStartAsc();
 
 }

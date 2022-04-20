@@ -28,9 +28,30 @@ public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    //GET /all
+    @Operation(summary = "Get all employees")
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('administrator')")
+    public ResponseEntity<List<Employee>> getAllEmployees(@AuthenticationPrincipal Jwt principal) {
+
+        List<Employee> allEmployees = employeeRepository.OrderByEmailAddressAsc();
+        HttpStatus status = HttpStatus.OK;
+        ResponseEntity<List<Employee>> response;
+
+        if(allEmployees.size() == 0){
+            status = HttpStatus.NO_CONTENT;
+            response = new ResponseEntity<>(status);
+        }
+        else{
+            //Admin can see all employees
+            response = new ResponseEntity<>(allEmployees, status);
+        }
+        return response;
+    }
+
     //GET /employee
     @Operation(summary = "Get Employee")
-    @GetMapping("")
+    @GetMapping("/")
     @PreAuthorize("hasAnyRole({'user', 'administrator'})")//ADMIN / USER protected
     public ResponseEntity<String> getEmployee(@AuthenticationPrincipal Jwt principal) throws URISyntaxException {
 
