@@ -58,7 +58,7 @@ public class IneligiblePeriodController {
 
         HttpStatus status;
 
-        if(!ineligiblePeriodRepository.existsById(newIneligiblePeriod.getIneligiblePeriodId())){
+        if(newIneligiblePeriod.getIneligiblePeriodId() == null){
             ineligiblePeriodRepository.save(newIneligiblePeriod);
             status = HttpStatus.CREATED;
             return new ResponseEntity<>(newIneligiblePeriod, status);

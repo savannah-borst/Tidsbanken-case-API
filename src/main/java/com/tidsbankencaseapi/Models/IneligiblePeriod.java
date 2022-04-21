@@ -13,7 +13,7 @@ public class IneligiblePeriod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ineligiblePeriodId;
+    private Integer ineligiblePeriodId;
 
     @NotBlank
     @Column(nullable = false)
@@ -24,7 +24,7 @@ public class IneligiblePeriod {
     private Date periodEnd;
 
     //-----GETTERS-----
-    public int getIneligiblePeriodId() {
+    public Integer getIneligiblePeriodId() {
         return ineligiblePeriodId;
     }
 
