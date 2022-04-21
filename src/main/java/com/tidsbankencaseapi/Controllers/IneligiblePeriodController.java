@@ -29,7 +29,7 @@ public class IneligiblePeriodController {
 
     //GET /ineligible
     @Operation(summary = "Get all ineligible periods")
-    @GetMapping("")
+    @GetMapping("/all")
     @PreAuthorize("hasAnyRole('user', 'administrator')")
     public ResponseEntity<List<IneligiblePeriod>> getIneligiblePeriods(@AuthenticationPrincipal Jwt principal){
         HttpStatus status;
@@ -50,7 +50,7 @@ public class IneligiblePeriodController {
 
     //POST /ineligible
     @Operation(summary = "Create a new ineligible period")
-    @PostMapping("")
+    @PostMapping("/create")
     @PreAuthorize("hasAnyRole('administrator')")
     public ResponseEntity<IneligiblePeriod> createIneligiblePeriod(
             @RequestBody IneligiblePeriod newIneligiblePeriod,
@@ -92,7 +92,7 @@ public class IneligiblePeriodController {
 
     //PATCH /ineligible/:ip_id
     @Operation(summary = "Update ineligible period by ip_id")
-    @PatchMapping("/{ip_id}")
+    @PatchMapping("/update/{ip_id}")
     @PreAuthorize("hasAnyRole('administrator')")
     public ResponseEntity<IneligiblePeriod> updateIneligiblePeriod(Integer ip_id,
             @RequestBody IneligiblePeriod newIneligiblePeriod,
@@ -122,7 +122,7 @@ public class IneligiblePeriodController {
 
     //DELETE /ineligible/:ip_id
     @Operation(summary = "Delete ineligible period by ip_id")
-    @DeleteMapping("{ip_id}")
+    @DeleteMapping("/delete/{ip_id}")
     @PreAuthorize("hasAnyRole('administrator')")
     public ResponseEntity<String> deleteIneligiblePeriodById(
             Integer ip_id, @AuthenticationPrincipal Jwt principal){
