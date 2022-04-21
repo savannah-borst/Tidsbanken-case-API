@@ -21,7 +21,7 @@ public class Comment {
 
     @NotBlank
     @Column(nullable = false)
-    private Date dateCreated;
+    private Date dateCreated = new Date();
 
     @NotBlank
     @Column
