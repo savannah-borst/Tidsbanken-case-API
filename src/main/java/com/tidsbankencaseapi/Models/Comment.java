@@ -45,7 +45,7 @@ public class Comment {
     @JsonGetter("commentOwner")
     public String get_owner() {
         if (commentOwner != null) {
-            return "/employee/" + commentOwner.getEmployeeId();
+            return commentOwner.getFirst_name() + commentOwner.getLast_name();
         }
         return null;
     }

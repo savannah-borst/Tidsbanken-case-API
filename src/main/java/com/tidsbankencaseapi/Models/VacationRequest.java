@@ -73,11 +73,11 @@ public class VacationRequest {
 
     //Relation with Comment
     @JsonGetter("comment")
-    public List<String> get_comments() {
+    public List<Integer> get_comments() {
         if (comment != null) {
             return comment.stream()
                     .map(commentItem -> {
-                        return  "/request/" + commentItem.getVacationRequest().getRequestId() + "/comment/" + commentItem.getCommentId();
+                        return  commentItem.getCommentId();
                     }).collect(Collectors.toList());
         }
         return null;
