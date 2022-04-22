@@ -47,7 +47,7 @@ public class VacationRequest {
     @JsonGetter("requestOwner")
     public String get_requestOwner() {
         if (requestOwner != null) {
-            return "/employee/" + requestOwner.getEmployeeId();
+            return requestOwner.getEmployeeId();
         } else {
             return null;
         }
@@ -61,7 +61,7 @@ public class VacationRequest {
     @JsonGetter("moderator")
     public String moderator() {
         if (moderator != null) {
-            return  "/employee/" + moderator.getEmployeeId();
+            return moderator.getEmployeeId();
         } else {
             return null;
         }
