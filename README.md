@@ -11,8 +11,30 @@ The application is used in combination with a single page web application that s
 ### Swagger
 All endpoint documentation on Swagger is available via this [website](https://api-tidsbanken-case.herokuapp.com/swagger-ui/index.html) hosted by Heroku.
 
+#### How To Login 
+
+To use the endpoints in Swagger u need to authorize. After being redirected to keycloak you need to insert the following credentials:
+
+As normal user with: <br />
+Username: testuser <br />
+Password: 1234
+
+And as admin with: <br />
+Username: testadmin <br />
+Password: 12345
+
 ### Tidsbanken Vacation Management System
 The single page web application which consumes the API endpoints is available at this [website](https://morning-citadel-07481.herokuapp.com/login) hosted by Heroku.
+
+#### How To Login 
+
+The user can login as user with: <br />
+Username: testuser <br />
+Password: 1234
+
+And as admin using: <br />
+Username: testadmin <br />
+Password: 12345
 
 ## Future works
 - Add settings functionality
