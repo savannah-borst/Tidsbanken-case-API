@@ -14,6 +14,10 @@ All endpoint documentation on Swagger is available via this [website](https://ap
 ### Tidsbanken Vacation Management System
 The single page web application which consumes the API endpoints is available at this [website](https://morning-citadel-07481.herokuapp.com/login) hosted by Heroku.
 
+## Future works
+- Add settings functionality
+- Add vacationdays functionality
+
 ## Built With
 [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 
