@@ -9,10 +9,10 @@ The application is used in combination with a single page web application that s
 ## How To Use
 
 ### Swagger
-All endpoint documentation is available via this [website](https://api-tidsbanken-case.herokuapp.com/swagger-ui/index.html) hosted by Heroku.
+All endpoint documentation on Swagger is available via this [website](https://api-tidsbanken-case.herokuapp.com/swagger-ui/index.html) hosted by Heroku.
 
 ### Tidsbanken Vacation Management System
-The single page web application which consumes the API endpoints is available at this [website](https://morning-citadel-07481.herokuapp.com/login) which is also hosted by Heroku.
+The single page web application which consumes the API endpoints is available at this [website](https://morning-citadel-07481.herokuapp.com/login) hosted by Heroku.
 
 ## Built With
 [IntelliJ IDEA](https://www.jetbrains.com/idea/)
