@@ -1,5 +1,5 @@
-# Noroff Bootcamp Tidsbanken Case API.
-[![web](https://img.shields.io/static/v1?logo=heroku&message=Online&label=Heroku&color=430098)]()
+# Noroff Bootcamp Tidsbanken Case API
+[![web](https://img.shields.io/static/v1?logo=heroku&message=Online&label=Heroku&color=430098)](https://api-tidsbanken-case.herokuapp.com/swagger-ui/index.html)
 
 ## Assignment
 The Tidsbanken Case API is a Java Spring Boot application which exposes several web API endpoints. 
