@@ -24,7 +24,7 @@ Username: testadmin <br />
 Password: 12345
 
 ### Tidsbanken Vacation Management System
-The single page web application which consumes the API endpoints is available at this [website](https://morning-citadel-07481.herokuapp.com/login) hosted by Heroku.
+The single page web application which consumes the API endpoints is available at this [website](https://tidsbanken-case.herokuapp.com/login) hosted by Heroku.
 
 #### How To Login 
 
