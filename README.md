@@ -40,6 +40,9 @@ Password: 12345
 - Add settings functionality
 - Add vacationdays functionality
 
+## Documentation
+Further documentation such as database diagram can be found in de main/resources/exports folder of the application.
+
 ## Built With
 [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 
