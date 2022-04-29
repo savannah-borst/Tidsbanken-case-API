@@ -41,7 +41,7 @@ Password: 12345
 - Add vacationdays functionality
 
 ## Documentation
-Further documentation such as database diagram can be found in de main/resources/exports folder of the application.
+Further documentation such as a database diagram and a user manual for the web application can be found in de src/main/resources/exports folder of the application.
 
 ## Built With
 [IntelliJ IDEA](https://www.jetbrains.com/idea/)
